@@ -1,0 +1,75 @@
+.surgery-wrap {
+    padding: 40px;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+h1 {
+    text-align: center;
+    font-size: 25px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 30px;
+    line-height: 150%;
+}
+
+.btn {
+    background-color: rgb(251, 255, 43);
+    color: black;
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active {
+    outline: none;
+    box-shadow: none;
+}
+
+.table {
+    margin-top: 40px;
+}
+
+tr {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.collapse {
+    display: none;
+    grid-column: 1/-1;
+    background-color: rgb(243, 243, 243);
+}
+
+.content {
+    padding: 10px 100px;
+}
+
+.col-lg-5 {
+    padding: 0 !important;
+}
+
+label {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.mat-icon {
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.less {
+    display: none;
+}
+
+.edit {
+    color: blue;
+}
+
+.delete {
+    color: red;
+}

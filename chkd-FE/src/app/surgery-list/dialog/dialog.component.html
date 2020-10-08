@@ -1,0 +1,57 @@
+<div class="dialog-wrap">
+    <form [formGroup]="surgeryForm">
+        <mat-error *ngIf="invalidForm">All fields marked * are required</mat-error>
+        <div class="row col-lg-12">
+            <mat-form-field appearance="outline" class="col-lg-3">
+                <mat-label>Surgery Type</mat-label>
+                <mat-select formControlName="type" [(value)]="selected" required>
+                    <mat-option *ngFor="let type of types" [value]="type.value">
+                        {{type.value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-lg-3">
+                <mat-label>Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="date" (click)="picker.open()" readonly required/>
+                <mat-datepicker touchUi #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-lg-3">
+                <mat-label>Time</mat-label>
+                <input matInput matTimepicker #t="matTimepicker" (click)="t.showDialog()" formControlName="time" mode='12h' readonly required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="col-lg-3">
+                <mat-label>Venue</mat-label>
+                <input matInput formControlName="venue" required>
+            </mat-form-field>
+        </div>
+        <div class="row col-lg-12">
+            <mat-form-field appearance="outline" class="col-lg-4">
+                <mat-label>Surgeon Name</mat-label>
+                <input matInput formControlName="surgeon" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="col-lg-4">
+                <mat-label>Patient Name</mat-label>
+                <input matInput formControlName="patient" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="col-lg-4">
+                <mat-label>Patient Age</mat-label>
+                <input type="number" matInput formControlName="patientAge" (keypress)="filter($event)" required>
+            </mat-form-field>
+        </div>
+        <div class="row-col-lg-12">
+            <mat-form-field appearance="outline" class="col-lg-6">
+                <mat-label>Prescription</mat-label>
+                <textarea matInput formControlName="prescription"></textarea>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="col-lg-6">
+                <mat-label>Instructions</mat-label>
+                <textarea matInput formControlName="instructions"></textarea>
+            </mat-form-field>
+        </div>
+        <button *ngIf="data.name == 'create'" class="btn" (click)="submitForm()">Create</button>
+        <button *ngIf="data.name == 'edit'" class="btn" (click)="updateForm()">Edit</button>
+    </form>
+</div>

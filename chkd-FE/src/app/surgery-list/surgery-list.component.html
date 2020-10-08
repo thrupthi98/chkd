@@ -1,0 +1,79 @@
+<div class="surgery-wrap">
+    <h1>Surgery List</h1>
+    <div class="row col-lg-12">
+        <div class="col-lg-5">
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>Search</mat-label>
+                <input matInput [formControl]="search" (keyup)="filter()">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-lg-5">
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>Surgery Type</mat-label>
+                <mat-select>
+                    <mat-option *ngFor="let type of types" [value]="type.value" (click)="view(type.value)">
+                        {{type.value}}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="col-lg-2">
+            <button class="btn" (click)="openDialog('create','all')">Create Surgery</button>
+        </div>
+        <div class="table-responsive" *ngIf="newList.length != 0">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Surgery Type</th>
+                        <th>Surgeon Name</th>
+                        <th>Patient Name</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Venue</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of newList; let i= index">
+                        <td>
+                            <mat-icon (click)="show(i)" id=more{{i}}>expand_more</mat-icon>
+                            <mat-icon class="less" (click)="show(i)" id=less{{i}}>expand_less</mat-icon>
+                            <mat-icon class="edit" (click)="openDialog('edit',data.id)">edit</mat-icon>
+                            <mat-icon class="delete" (click)="delete(data.id)">delete</mat-icon>
+                        </td>
+                        <td>{{data.type}}</td>
+                        <td>{{data.surgeon}}</td>
+                        <td>{{data.patient}}</td>
+                        <td>{{data.date}}</td>
+                        <td>{{data.time}}</td>
+                        <td>{{data.venue}}</td>
+                        <div class="collapse" id={{i}}>
+                            <div class="row content col-lg-12">
+                                <div class="col-lg-1"></div>
+                                <div class="inner col-lg-4">
+                                    <label>Prescreption</label>
+                                    <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
+                                    <p *ngIf="data.prescription == ''">No prescriptions available</p>
+                                </div>
+                                <div class="inner col-lg-4">
+                                    <label>Instructions</label>
+                                    <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
+                                    <p *ngIf="data.instructions == ''">No instructions available</p>
+                                </div>
+                                <div class="inner col-lg-2">
+                                    <label>Patient Age</label>
+                                    <p>{{data.patientAge}}</p>
+                                </div>
+                                <div class="col-lg-1"></div>
+                            </div>
+                        </div>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div *ngIf="newList.length == 0">
+            <h1>No Data Available</h1>
+        </div>
+    </div>
+</div>

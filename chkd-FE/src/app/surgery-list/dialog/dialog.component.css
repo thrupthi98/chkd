@@ -1,0 +1,35 @@
+.mat-error {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+.col-lg-12 {
+    padding: 0 !important;
+}
+
+.btn {
+    background-color: rgb(251, 255, 43);
+    color: black;
+    width: 100px;
+    padding: 5px;
+    margin-top: 5px;
+    float: right;
+    border-radius: 5px;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active {
+    outline: none;
+    box-shadow: none;
+}
