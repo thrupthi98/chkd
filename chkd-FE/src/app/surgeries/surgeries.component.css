@@ -1,0 +1,98 @@
+.surgery-wrap {
+    padding: 10px 40px;
+}
+
+.header {
+    height: 40px;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+.outer {
+    text-align: center;
+    padding: 40px 0;
+}
+
+.video {
+    text-align: center;
+    padding: 10px 0;
+}
+
+.mat-form-field {
+    display: inline-block;
+}
+
+.mat-tab-content {
+    padding: 20px !important;
+}
+
+h1 {
+    text-align: center;
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 30px;
+    line-height: 150%;
+}
+
+.btn {
+    background-color: rgb(251, 255, 43);
+    color: black;
+    width: 100px;
+    padding: 10px;
+    margin-top: 20px;
+    float: left;
+    margin-left: 40px;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active {
+    outline: none;
+    box-shadow: none;
+}
+
+.header-btn {
+    background-color: rgb(251, 255, 43);
+    float: right;
+    margin: 20px
+}
+
+.header-btn:hover,
+.header-btn:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.header-icon {
+    margin: 0 !important;
+    color: black;
+}
+
+h2 {
+    font-size: 20px;
+}
+
+ul {
+    text-align: left !important;
+    font-size: 18px;
+}
+
+.side-list {
+    margin-left: 40px;
+}
+
+p {
+    text-align: left;
+    font-size: 16px;
+    margin-top: 0 !important;
+    margin-right: 20px;
+}
+
+.side-list .mat-icon {
+    font-size: 16px;
+    margin-right: 20px;
+    cursor: pointer;
+}

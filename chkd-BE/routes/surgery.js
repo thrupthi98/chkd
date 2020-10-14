@@ -30,8 +30,8 @@ router.post("/", (req, res) => {
     })
 })
 
-router.get("/", (req, res) => {
-    Surgery.find().then(result => {
+router.get("/upcoming", (req, res) => {
+    Surgery.find({ date: { $lte: new Date() } }).sort({ date: 1, time: 1 }).then(result => {
         console.log("Successfully fetched the surgery");
         res.status(200).json({
             message: "Surgery fetched successfully",
@@ -45,6 +45,23 @@ router.get("/", (req, res) => {
         })
     })
 })
+
+router.get("/previous", (req, res) => {
+    Surgery.find({ date: { $gt: new Date() } }).sort({ date: 1, time: 1 }).then(result => {
+        console.log("Successfully fetched the surgery");
+        res.status(200).json({
+            message: "Surgery fetched successfully",
+            status: "SUCCESS",
+            data: result
+        })
+    }).catch(err => {
+        res.status(500).json({
+            message: "Problem occured while fetching the surgery",
+            status: "FAILURE"
+        })
+    })
+})
+
 router.get("/getId/:id", (req, res) => {
     Surgery.findOne({ id: req.params.id }).then(result => {
         console.log("Successfully fetched the surgery by id");

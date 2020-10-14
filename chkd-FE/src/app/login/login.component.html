@@ -1,0 +1,19 @@
+<div class="login-wrap">
+    <mat-card class="prev-blog-card mat-elevation-z12">
+        <h1>Login</h1>
+        <form [formGroup]="loginForm">
+            <mat-form-field appearance="outline" class="col-lg-8">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" required>
+                <mat-error *ngIf="loginForm.controls.email.invalid">{{getEmailError()}}</mat-error>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="col-lg-8">
+                <mat-label>Password</mat-label>
+                <input matInput type="password" formControlName="password" required>
+                <mat-error *ngIf="loginForm.controls.password.invalid">{{getPasswordError()}}</mat-error>
+            </mat-form-field>
+            <br>
+            <button class="btn" (click)="login()">Login</button>
+        </form>
+    </mat-card>
+</div>

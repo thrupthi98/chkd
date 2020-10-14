@@ -14,8 +14,12 @@ export class SurgeryService{
         return this.http.post(this.baseUri, data)
     }
 
-    getAllSurgery(){
-        return this.http.get(this.baseUri)
+    getUpcomingSurgery(){
+        return this.http.get(`${this.baseUri}/upcoming`)
+    }
+
+    getPreviousSurgery(){
+        return this.http.get(`${this.baseUri}/previous`)
     }
 
     getSurgeryById(id){

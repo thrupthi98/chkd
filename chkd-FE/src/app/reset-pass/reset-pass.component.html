@@ -1,0 +1,30 @@
+<div class="title">
+    <mat-icon class="close" (click)="closeDialog()">close</mat-icon>
+    <h2>Change Password</h2>
+</div>
+<div class="reset-wrap">
+    <div class="outer">
+        <form [formGroup]="resetForm">
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>Current Password</mat-label>
+                <input [type]="hide ? 'password' : 'text'" matInput formControlName="current">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"><mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+                <mat-error *ngIf="resetForm.controls.current.invalid">{{getCurrentError()}}</mat-error>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>New Password</mat-label>
+                <input [type]="hideNew ? 'password' : 'text'" matInput formControlName="new">
+                <button mat-icon-button matSuffix (click)="hideNew = !hideNew" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide"><mat-icon>{{hideNew ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+                <mat-error *ngIf="resetForm.controls.new.invalid">{{getNewError()}}</mat-error>
+            </mat-form-field><br>
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>Repeat Password</mat-label>
+                <input matInput formControlName="repeat">
+                <mat-error *ngIf="resetForm.controls.repeat.invalid || resetForm.controls.repeat.value != resetForm.controls.new.value">{{getRepError()}}</mat-error>
+            </mat-form-field><br>
+            <div class="btn-wrap">
+                <button class="btn" [disabled]="resetForm.invalid || resetForm.controls.new.value !== resetForm.controls.repeat.value" (click)="submit()">Change</button>
+            </div><br>
+        </form>
+    </div>
+</div>

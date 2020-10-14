@@ -1,26 +1,26 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { Sort } from '@angular/material/sort';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { SurgeryService } from 'src/services/Surgery.service';
-import { DialogComponent } from './dialog/dialog.component';
-import { map, startWith } from "rxjs/operators";
-import Swal from 'sweetalert2';
+import { map, startWith } from 'rxjs/operators';
+import { AuthService } from 'src/services/Authentication.service';
 import { KywdsService } from 'src/services/Kywds.service';
 import { LoginService } from 'src/services/Login.service';
-import { Sort } from '@angular/material/sort';
-import { Router } from '@angular/router';
-import { AuthService } from 'src/services/Authentication.service';
-import { SurgeryTypeService } from 'src/services/SurgeryType.service';
 import { SurgeonService } from 'src/services/Surgeon.service';
+import { SurgeryService } from 'src/services/Surgery.service';
+import { SurgeryTypeService } from 'src/services/SurgeryType.service';
+import Swal from 'sweetalert2';
 import { ResetPassComponent } from '../reset-pass/reset-pass.component';
+import { DialogComponent } from '../surgery-list/dialog/dialog.component';
 
 @Component({
-  selector: 'app-surgery-list',
-  templateUrl: './surgery-list.component.html',
-  styleUrls: ['./surgery-list.component.css']
+  selector: 'app-admin',
+  templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css']
 })
-export class SurgeryListComponent implements OnInit {
+export class AdminComponent implements OnInit {
 
   types: any = [
     {value: 'Surgery Type'},
@@ -51,8 +51,9 @@ export class SurgeryListComponent implements OnInit {
   venue = new FormControl();
 
   venuList:any;
-  surgeonList:any;
-  typeList: any;
+  surgeonList:any = []
+  surgeonIds: any = []
+  typeList: any = []
 
   filteredSurgerykywds: Observable<string[]>;
   filteredSurgeonkywds: Observable<string[]>;
@@ -62,25 +63,25 @@ export class SurgeryListComponent implements OnInit {
     public dialog: MatDialog,
     private surgeryService: SurgeryService,
     private kywdsService: KywdsService,
+    private surgeryTypeservice : SurgeryTypeService,
+    private surgeonService : SurgeonService,
     private loginService: LoginService,
     private router: Router,
-    private authenticationService: AuthService,
-    private surgeryTypeservice : SurgeryTypeService,
-    private surgeonService : SurgeonService
+    private authenticationService: AuthService
   ) { }
 
   ngOnInit(): void {
-  
-  var url = this.router.url;
 
-  this.authenticationService.checkAccess(url).subscribe((res)=>{  
-  this.kywdsService.getKywds().subscribe((res)=>{
+  let url = this.router.url;
+
+  this.authenticationService.checkAccess(url).subscribe((res)=>{
+    this.kywdsService.getKywds().subscribe((res)=>{
       this.venuList = res['data'][0].kywds;
 
       this.filteredVenuekywds = this.venue.valueChanges.pipe(startWith(''), map(value => 
         this.venueFilter(value)
       ));
-  },(err)=>{
+    },(err)=>{
       console.log('error')
     })
 
@@ -106,13 +107,13 @@ export class SurgeryListComponent implements OnInit {
 
     this.surgeryService.getUpcomingSurgery().subscribe((res)=>{
       this.surgeryList = res['data']
-      this.newList = this.surgeryList;
+      this.newList = this.surgeryList
       this.sortedList = this.newList.slice();
-    },(err)=>{
+    }, (err)=>{
       console.log("error")
     })
 
-  },(err)=>{
+  }, (err)=>{
     if(err.error != undefined && err.error.status == "UN_AUTHORISED"){
       this.router.navigateByUrl("/no-access")
     }else{
@@ -181,38 +182,17 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
       return result
   }
   surgeonFilter(value: string): string[]{
-    let result =this.surgeonList.filter(option => 
-      option.fname.toString().toLowerCase().includes(value.toLowerCase())
-      || option.lname.toString().toLowerCase().includes(value.toLowerCase())
-    );
-    return result
+      let result =this.surgeonList.filter(option => 
+        option.fname.toString().toLowerCase().includes(value.toLowerCase())
+        || option.lname.toString().toLowerCase().includes(value.toLowerCase())
+      );
+      return result
   }
   venueFilter(value: string): string[]{
     let result =this.venuList.filter(option => 
       option.toString().toLowerCase().includes(value.toLowerCase())
     );
     return result
-  }
-
-  showPrevious(){
-    this.upcoming = !this.upcoming
-    if(this.upcoming){
-        this.surgeryService.getUpcomingSurgery().subscribe((res)=>{
-        this.surgeryList = res['data']
-        this.newList = this.surgeryList
-        this.sortedList = this.newList.slice();
-      },(err)=>{
-        console.log("error")
-      })
-    }else{
-      this.surgeryService.getPreviousSurgery().subscribe((res)=>{
-        this.surgeryList = res['data']
-        this.newList = this.surgeryList
-        this.sortedList = this.newList.slice();
-      },(err)=>{
-        console.log("error")
-      })
-    }
   }
 
   show(index){
@@ -261,6 +241,27 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
     this.sortedList = this.newList;
   }
 
+  showPrevious(){
+    this.upcoming = !this.upcoming
+    if(this.upcoming){
+        this.surgeryService.getUpcomingSurgery().subscribe((res)=>{
+        this.surgeryList = res['data']
+        this.newList = this.surgeryList
+        this.sortedList = this.newList.slice();
+      },(err)=>{
+        console.log("error")
+      })
+    }else{
+      this.surgeryService.getPreviousSurgery().subscribe((res)=>{
+        this.surgeryList = res['data']
+        this.newList = this.surgeryList
+        this.sortedList = this.newList.slice();
+      },(err)=>{
+        console.log("error")
+      })
+    }
+  }
+
   openDialog(name,id){
     if(name == 'edit'){
       this.dialog.open(DialogComponent, {
@@ -307,7 +308,7 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
   logout(){
     this.loginService.logoutAdmin(localStorage.getItem("UUID")).subscribe((res)=>{
       localStorage.removeItem("UUID")
-      this.router.navigateByUrl('/')
+      this.router.navigateByUrl("/")
     },(err)=>{
       Swal.fire({
         text: "There was a problem during logout",
@@ -315,4 +316,5 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
       })
     })
   }
+
 }

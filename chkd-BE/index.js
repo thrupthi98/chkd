@@ -6,6 +6,12 @@ var cors = require("cors");
 const connectDb = require("./database/db");
 
 const surgery = require("./routes/surgery");
+const keywds = require("./routes/keywds");
+const login = require("./routes/login");
+const user = require("./routes/user");
+const surgeryType = require("./routes/surgeryType");
+const auth = require("./routes/auth");
+const surgeon = require("./routes/surgeon")
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -24,5 +30,11 @@ app.use((req, res, next) => {
 });
 
 app.use('/surgery', surgery)
+app.use('/keywds', keywds)
+app.use('/login', login)
+app.use('/user', user)
+app.use('/surgery-type', surgeryType)
+app.use("/auth", auth)
+app.use("/surgeon", surgeon)
 
 app.listen(port, () => console.log("app running at - " + port))

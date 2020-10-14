@@ -10,7 +10,13 @@ import { MatTimepickerModule } from 'mat-timepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
-
+import {MatMenuModule} from '@angular/material/menu';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatListModule} from '@angular/material/list';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSortModule} from '@angular/material/sort';
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatCardModule} from '@angular/material/card';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,13 +28,27 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from '@angular/common/http';
+import { SurgeriesComponent } from './surgeries/surgeries.component';
+import { LoginComponent } from './login/login.component';
+import { AdminComponent } from './admin/admin.component';
+import { UsersComponent } from './users/users.component';
+import { NoAccessComponent } from './no-access/no-access.component';
+import { SurgeonsComponent } from './surgeons/surgeons.component';
+import { ResetPassComponent } from './reset-pass/reset-pass.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     SurgeryListComponent,
-    DialogComponent
+    DialogComponent,
+    UsersComponent,
+    SurgeriesComponent,
+    LoginComponent,
+    AdminComponent,
+    NoAccessComponent,
+    SurgeonsComponent,
+    ResetPassComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +65,14 @@ import { HttpClientModule } from '@angular/common/http';
     MatTimepickerModule,
     MatNativeDateModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatMenuModule,
+    MatAutocompleteModule,
+    MatListModule,
+    MatCheckboxModule,
+    MatSortModule,
+    MatTabsModule,
+    MatCardModule
   ],
   providers: [
     MatDatepickerModule,

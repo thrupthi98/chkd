@@ -6,6 +6,16 @@
         <button class="items" mat-menu-item (click)="logout()">Logout</button>
         <button class="items" mat-menu-item (click)="resetDialog()">Reset Password</button>
     </mat-menu>
+
+    <button class="accounts-btn" [matMenuTriggerFor]="accounts">
+        Manage Accounts
+    </button>
+
+    <mat-menu #accounts="matMenu">
+        <button class="items" mat-menu-item [routerLink]="['/users']">Create Users</button>
+        <button class="items" mat-menu-item [routerLink]="['/surgery']">Add Surgeries</button>
+        <button class="items" mat-menu-item [routerLink]="['/surgeon']">Add Surgeons</button>
+    </mat-menu>
 </div>
 <hr>
 <div class="surgery-wrap">

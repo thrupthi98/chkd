@@ -1,0 +1,42 @@
+<div class="users-wrap">
+    <mat-card class="prev-blog-card mat-elevation-z12">
+        <h1>Create Users</h1>
+        <div class="row col-lg-12">
+            <form [formGroup]="registerForm">
+                <mat-error *ngIf="invalidForm">All fields marked * are required</mat-error>
+                <mat-form-field appearance="outline" class="col-lg-4">
+                    <mat-label>First Name</mat-label>
+                    <input matInput formControlName="fname" required/>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-lg-4">
+                    <mat-label>Last Name</mat-label>
+                    <input matInput formControlName="lname" required/>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-lg-4">
+                    <mat-label>Date of Birth</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="dob" (click)="picker.open()" [max]="today" readonly required/>
+                    <mat-datepicker touchUi #picker></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-lg-4">
+                    <mat-label>Email</mat-label>
+                    <input matInput formControlName="email" required/>
+                    <mat-error *ngIf="registerForm.controls.email.invalid">{{getEmailError()}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-lg-4">
+                    <mat-label>Phone Number</mat-label>
+                    <input matInput type="number" formControlName="contact" required/>
+                    <mat-error *ngIf="registerForm.controls.contact.invalid">{{getContactError()}}</mat-error>
+                </mat-form-field>
+                <mat-form-field appearance="outline" class="col-lg-4">
+                    <mat-label>Role</mat-label>
+                    <mat-select formControlName="role" required>
+                        <mat-option *ngFor="let role of roles" [value]="role.value">
+                            {{role.value}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <button class="btn" (click)="submitForm()">Add User</button>
+            </form>
+        </div>
+    </mat-card>
+</div>

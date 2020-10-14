@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SurgeryService } from 'src/services/Surgery.service';
-import {MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { Inject } from '@angular/core';
+import { map, startWith } from "rxjs/operators";
 import Swal from 'sweetalert2';
+import { Observable } from 'rxjs';
+import { KywdsService } from 'src/services/Kywds.service';
+import { UserService } from 'src/services/User.service';
 
 @Component({
   selector: 'app-dialog',
@@ -23,14 +27,29 @@ export class DialogComponent implements OnInit {
   surgeryForm:FormGroup;
   invalidForm:Boolean = false;
 
+  venueList:any;
+  surgeonList:any;
+  typeList:any;
+  patientList: any;
+
+  filteredSurgerykywds:Observable<string[]>;
+  filteredVenuekywds:Observable<string[]>;
+  filteredSurgeonkywds:Observable<string[]>;
+  filteredPatientkywds:Observable<string[]>;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
-    private surgeryService: SurgeryService
+    private surgeryService: SurgeryService,
+    private dialog: MatDialog,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
-    this.selected = "halle";
+    this.venueList = this.data.venueList;
+    this.surgeonList = this.data.surgeonList;
+    this.typeList = this.data.typeList;
+
     this.surgeryForm = this.fb.group({
       type:["",Validators.required],
       date:["",Validators.required],
@@ -42,23 +61,77 @@ export class DialogComponent implements OnInit {
       prescription:[""],
       instructions:[""]
     })
+
     if(this.data.name == 'edit'){
       this.surgeryService.getSurgeryById(this.data.id).subscribe(result => {
         let receviedData = result['data'];
         this.selected = receviedData['type'];
         this.surgeryForm = this.fb.group({
-          type:[null,Validators.required],
+          type:[receviedData['type'],Validators.required],
           date:[new Date(receviedData['date']),Validators.required],
           time:[new Date(receviedData['date'] + " " + receviedData['time']),Validators.required],
           surgeon:[receviedData['surgeon'],Validators.required],
           venue:[receviedData['venue'],Validators.required],
           patient:[receviedData['patient'],Validators.required],
-          patientAge:[receviedData['patientAge'],Validators.required],
+          patientAge:[receviedData['patientAge'],[Validators.required, Validators.max(100)]],
           prescription:[receviedData['prescription']],
           instructions:[receviedData['instructions']]
         })
       })
     }
+
+    this.userService.getPatients().subscribe((res)=>{
+      this.patientList = res['data'];
+
+      this.filteredPatientkywds = this.surgeryForm.controls.patient.valueChanges.pipe(startWith(''), map(value => 
+        this.doPatientFilter(value)
+      ));
+    }, (err)=>{
+      console.log("error")
+    })
+
+    this.filteredSurgerykywds = this.surgeryForm.controls.type.valueChanges.pipe(startWith(''), map(value => 
+      this.doSurgeryFilter(value)
+    ));
+
+    this.filteredSurgeonkywds = this.surgeryForm.controls.surgeon.valueChanges.pipe(startWith(''), map(value => 
+      this.doSurgeonFilter(value)
+    ));
+
+    this.filteredVenuekywds = this.surgeryForm.controls.venue.valueChanges.pipe(startWith(''), map(value => 
+      this.doVenueFilter(value)
+    ));
+  
+  }
+
+  doPatientFilter(value){
+    let result =this.patientList.filter(option => 
+      option.fname.toString().toLowerCase().includes(value.toLowerCase())
+      || option.lname.toString().toLowerCase().includes(value.toLowerCase())
+    );
+    return result
+  }
+
+  doSurgeryFilter(value){
+    let result =this.typeList.filter(option => 
+      option.toString().toLowerCase().includes(value.toLowerCase())
+    );
+    return result
+  }
+
+  doSurgeonFilter(value){
+    let result =this.surgeonList.filter(option => 
+      option.fname.toString().toLowerCase().includes(value.toLowerCase())
+      || option.lname.toString().toLowerCase().includes(value.toLowerCase())
+    );
+    return result
+  }
+
+  doVenueFilter(value){
+    let result =this.venueList.filter(option => 
+      option.toString().toLowerCase().includes(value.toLowerCase())
+    );
+    return result
   }
 
   submitForm(){
@@ -131,6 +204,10 @@ export class DialogComponent implements OnInit {
     {
         evt.preventDefault();
     }
+  }
+
+  closeDialog(){
+    this.dialog.closeAll();
   }
 
 }
