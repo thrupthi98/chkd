@@ -86,19 +86,10 @@ router.get("/patients/:contact", (req, res) => {
     Users.findOne({ role: "Patient", contact: req.params.contact }).then((result) => {
         var details = result;
         if (result != null || result != undefined) {
-            surgery.find({ pt_id: result.id, status: { $ne: "Patient Discharged" } }).then((result) => {
-                if (result.length == 0) {
-                    res.status(200).json({
-                        message: "patient details fetch successfully",
-                        status: 'SUCCESS',
-                        data: details
-                    })
-                } else {
-                    res.status(400).json({
-                        message: "Patient already has a surgery created",
-                        status: 'BAD_REQUEST',
-                    })
-                }
+            res.status(200).json({
+                message: "patient details fetch successfully",
+                status: 'SUCCESS',
+                data: details
             })
         } else {
             res.status(200).json({
