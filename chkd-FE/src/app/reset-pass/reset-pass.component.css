@@ -1,15 +1,15 @@
 .reset-wrap {
-    padding: 20px;
+    padding: 0 60px;
 }
 
 .title {
-    background-color: rgb(251, 255, 43);
+    background-color: #f8c045;
     text-align: center;
     padding: 5px;
     margin-bottom: 20px;
 }
 
-::ng-deep .mat-dialog-container {
+ ::ng-deep .reset-wrap .mat-dialog-container {
     padding: 0 !important;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .btn {
-    background-color: rgb(251, 255, 43);
+    background-color: #f8c045;
     color: black;
     width: 100px;
     padding: 5px;

@@ -1,43 +1,20 @@
-<div class="header">
-    <button mat-mini-fab class="header-btn" [matMenuTriggerFor]="settings">
-        <mat-icon class="header-icon">person</mat-icon>
-      </button>
-    <mat-menu #settings="matMenu">
-        <button class="items" mat-menu-item (click)="logout()">Logout</button>
-        <button class="items" mat-menu-item (click)="resetDialog()">Reset Password</button>
-    </mat-menu>
-
-    <button class="accounts-btn" [matMenuTriggerFor]="accounts">
-        Manage Accounts
-    </button>
-
-    <mat-menu #accounts="matMenu">
-        <button class="items" mat-menu-item [routerLink]="['/users']">Create Users</button>
-        <button class="items" mat-menu-item [routerLink]="['/surgery']">Add Surgeries</button>
-        <button class="items" mat-menu-item [routerLink]="['/surgeon']">Add Surgeons</button>
-    </mat-menu>
-</div>
-<hr>
 <div class="surgery-wrap">
     <div *ngIf="upcoming">
-        <h1>Upcoming Surgeries</h1>
+        <h1>List of Surgeries</h1>
         <button class="btn" (click)="showPrevious()">
-        Previous Surgeries
+            View Previous Surgeries
         </button>
     </div>
     <div *ngIf="!upcoming">
-        <h1>Previous Surgeries</h1>
+        <h1>List of Surgeries</h1>
         <button class="btn" (click)="showPrevious()">
-            Upcoming Surgeries
+            View Upcoming Surgeries
         </button>
     </div>
+    <!-- <h1>List of Surgeries</h1> -->
     <div class="row col-lg-12">
         <div class="col-lg-3">
-            <h3>Filters</h3>
-            <mat-checkbox class="col-lg-12" id="type" (change)="addFilter($event)">
-                Surgery Type
-            </mat-checkbox>
-            <div class="col-lg-12" *ngIf="displayType">
+            <div class="col-lg-12">
                 <mat-form-field class="col-lg-12">
                     <mat-label>Surgery Type</mat-label>
                     <input matInput [matAutocomplete]="auto" (keyup)="searchFilter()" [formControl]="surgery" />
@@ -48,28 +25,26 @@
                     </mat-autocomplete>
                 </mat-form-field>
             </div>
-            <mat-checkbox class="col-lg-12" id="surgeon" (change)="addFilter($event)">
-                Surgeon Name
-            </mat-checkbox>
-            <div class="col-lg-12" *ngIf="displaySurgeon">
+        </div>
+        <div class="col-lg-3">
+            <div class="col-lg-12">
                 <mat-form-field class="col-lg-12">
                     <mat-label>Surgery Name</mat-label>
-                    <input matInput [matAutocomplete]="auto" (keyup)="searchFilter()" [formControl]="surgeon" />
-                    <mat-autocomplete #auto="matAutocomplete">
+                    <input matInput [matAutocomplete]="auto1" (keyup)="searchFilter()" [formControl]="surgeon" />
+                    <mat-autocomplete #auto1="matAutocomplete">
                         <mat-option *ngFor="let option of filteredSurgeonkywds | async" [value]="option.fname + ' ' + option.lname" (click)="searchFilter()">
                             {{ option.fname + " " + option.lname}}
                         </mat-option>
                     </mat-autocomplete>
                 </mat-form-field>
             </div>
-            <mat-checkbox class="col-lg-12" id="venue" (change)="addFilter($event)">
-                Venue
-            </mat-checkbox>
-            <div class="col-lg-12" *ngIf="displayVenue">
+        </div>
+        <div class="col-lg-3">
+            <div class="col-lg-12">
                 <mat-form-field class="col-lg-12">
                     <mat-label>Venue</mat-label>
-                    <input matInput [matAutocomplete]="auto" (keyup)="searchFilter()" [formControl]="venue" />
-                    <mat-autocomplete #auto="matAutocomplete">
+                    <input matInput [matAutocomplete]="auto2" (keyup)="searchFilter()" [formControl]="venue" />
+                    <mat-autocomplete #auto2="matAutocomplete">
                         <mat-option *ngFor="let option of filteredVenuekywds | async" [value]="option" (click)="searchFilter()">
                             {{ option }}
                         </mat-option>
@@ -77,71 +52,106 @@
                 </mat-form-field>
             </div>
         </div>
+        <div class="search col-lg-3">
+            <mat-form-field class="col-lg-12">
+                <mat-label>Search</mat-label>
+                <input matInput [formControl]="search" (keyup)="searchFilter()">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+        </div>
+    </div>
 
-        <div class="card col-lg-9">
-            <div class="col-lg-5">
-                <mat-form-field appearance="outline" class="col-lg-12">
-                    <mat-label>Search</mat-label>
-                    <input matInput [formControl]="search" (keyup)="searchFilter()">
-                    <mat-icon matSuffix>search</mat-icon>
-                </mat-form-field>
-            </div>
-            <div class="table-responsive col-lg-12" *ngIf="newList.length != 0">
-                <table class="table" matSort (matSortChange)="sortData($event)">
-                    <thead>
-                        <tr>
-                            <th>
-                                <mat-icon (click)="openDialog('create','all')">add_circle_outline</mat-icon>
-                            </th>
-                            <th>Surgery Type</th>
-                            <th>Surgeon Name</th>
-                            <th>Patient Name</th>
-                            <th mat-sort-header="date">Date</th>
-                            <th mat-sort-header="time">Time</th>
-                            <th>Venue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of sortedList; let i= index">
-                            <td>
-                                <mat-icon (click)="show(i)" id=more{{i}}>expand_more</mat-icon>
-                                <mat-icon class="less" (click)="show(i)" id=less{{i}}>expand_less</mat-icon>
-                                <mat-icon class="edit" (click)="openDialog('edit',data.id)">edit</mat-icon>
-                                <mat-icon class="delete" (click)="delete(data.id)">delete</mat-icon>
-                            </td>
-                            <td>{{data.type}}</td>
-                            <td>{{data.surgeon}}</td>
-                            <td>{{data.patient}}</td>
-                            <td>{{data.date}}</td>
-                            <td>{{data.time}}</td>
-                            <td>{{data.venue}}</td>
-                            <div class="collapse" id={{i}}>
-                                <div class="row content col-lg-12">
-                                    <div class="col-lg-1"></div>
-                                    <div class="inner col-lg-4">
-                                        <label>Prescreption</label>
-                                        <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
-                                        <p *ngIf="data.prescription == ''">No prescriptions available</p>
-                                    </div>
-                                    <div class="inner col-lg-4">
-                                        <label>Instructions</label>
-                                        <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
-                                        <p *ngIf="data.instructions == ''">No instructions available</p>
-                                    </div>
-                                    <div class="inner col-lg-2">
-                                        <label>Patient Age</label>
-                                        <p>{{data.patientAge}}</p>
-                                    </div>
-                                    <div class="col-lg-1"></div>
+    <div class="mat-elevation-z8">
+        <table mat-table [dataSource]="sortedList" matSort multiTemplateDataRows (matSortChange)="sortData($event)">
+
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>
+                    <mat-icon (click)="openDialog('create','all')">add_circle_outline</mat-icon>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-icon (click)="expandedElement = expandedElement === row ? null : row" *ngIf="expandedElement != row">expand_more</mat-icon>
+                    <mat-icon (click)="expandedElement = expandedElement === row ? null : row" *ngIf="expandedElement == row">expand_less</mat-icon>
+
+                    <mat-icon class="edit" (click)="openDialog('edit',row.id)">edit</mat-icon>
+                    <mat-icon class="delete" (click)="delete(row.id)">delete</mat-icon>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef> Surgery Type </th>
+                <td mat-cell *matCellDef="let row"> {{row.type}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="surgeon">
+                <th mat-header-cell *matHeaderCellDef>Surgeon Name</th>
+                <td mat-cell *matCellDef="let row"> {{row.surgeon}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="patient">
+                <th mat-header-cell *matHeaderCellDef> Patient Name </th>
+                <td mat-cell *matCellDef="let row"> {{row.patient}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+                <td mat-cell *matCellDef="let row"> {{row.date}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="time">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Time </th>
+                <td mat-cell *matCellDef="let row"> {{row.time}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="venue">
+                <th mat-header-cell *matHeaderCellDef> Venue </th>
+                <td mat-cell *matCellDef="let row"> {{row.venue}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="change">
+                <th mat-header-cell *matHeaderCellDef>Change Status</th>
+                <td mat-cell *matCellDef="let row"><button class="status" mat-raised-button (click)="openDialog('status',row.id)">Change</button></td>
+            </ng-container>
+
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="tableColumns.length">
+                    <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <div class="example-element-description">
+                            <div class="row col-lg-12">
+                                <div class="col-lg-6">
+                                    <mat-card>
+                                        <h2>Prescription</h2>
+                                        <p *ngIf="element.prescription != ''">{{element.prescription}}</p>
+                                        <p *ngIf="element.prescription == ''">No Prescription Available</p>
+                                    </mat-card>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-card>
+                                        <h2>Instructions</h2>
+                                        <p *ngIf="element.prescription != ''">{{element.instructions}}</p>
+                                        <p *ngIf="element.prescription == ''">No Prescription Available</p>
+                                    </mat-card>
                                 </div>
                             </div>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div *ngIf="newList.length == 0">
-                <h1>No Data Available</h1>
-            </div>
-        </div>
+                        </div>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+            <tr mat-row *matRowDef="let element; columns: tableColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement == element">
+            </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter</td>
+            </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </div>
 </div>

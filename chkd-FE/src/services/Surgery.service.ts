@@ -26,6 +26,10 @@ export class SurgeryService{
         return this.http.get(`${this.baseUri}/getId/${id}`)
     }
 
+    updateStatus(data:any,socket:any):void{
+        socket.emit('updateStatus', data);
+    }
+
     updateSurgery(id, updateData){
         return this.http.put(`${this.baseUri}/update/${id}`, updateData)
     }

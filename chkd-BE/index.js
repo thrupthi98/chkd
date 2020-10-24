@@ -3,6 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 var cors = require("cors");
+var http = require("http");
+var socket = require("socket.io")
 const connectDb = require("./database/db");
 
 const surgery = require("./routes/surgery");
@@ -11,7 +13,8 @@ const login = require("./routes/login");
 const user = require("./routes/user");
 const surgeryType = require("./routes/surgeryType");
 const auth = require("./routes/auth");
-const surgeon = require("./routes/surgeon")
+const surgeon = require("./routes/surgeon");
+const socketRoute = require("./routes/socket")
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -28,6 +31,18 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     next();
 });
+
+const server = http.Server(app);
+const io = socket(server)
+io.origins("*:*")
+
+io.on('connection', (socket) => {
+    console.log("Connected to Socket!!" + socket.id);
+    socket.on('updateStatus', (data) => {
+        console.log('socketData: ' + JSON.stringify(data));
+        socketRoute.updateStatus(io, data);
+    });
+})
 
 app.use('/surgery', surgery)
 app.use('/keywds', keywds)

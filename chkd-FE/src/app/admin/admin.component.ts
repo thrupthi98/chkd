@@ -14,11 +14,19 @@ import { SurgeryTypeService } from 'src/services/SurgeryType.service';
 import Swal from 'sweetalert2';
 import { ResetPassComponent } from '../reset-pass/reset-pass.component';
 import { DialogComponent } from '../surgery-list/dialog/dialog.component';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css']
+  styleUrls: ['./admin.component.css'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class AdminComponent implements OnInit {
 
@@ -27,6 +35,9 @@ export class AdminComponent implements OnInit {
     {value: 'Surgeon Name'},
     {value: 'Venue'}
   ];
+
+  tableColumns = ['action','type','surgeon','patient','date','time','venue','status','change']
+  expandedElement: TableData | null;
 
   role;
 
@@ -107,6 +118,10 @@ export class AdminComponent implements OnInit {
 
     this.surgeryService.getUpcomingSurgery().subscribe((res)=>{
       this.surgeryList = res['data']
+      this.surgeryList.forEach(item => {
+        item.date = new Date(item.dateTime).toLocaleDateString("en-US")
+        item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
+      });
       this.newList = this.surgeryList
       this.sortedList = this.newList.slice();
     }, (err)=>{
@@ -132,16 +147,16 @@ export class AdminComponent implements OnInit {
     this.sortedList = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
-        case 'date': return this.compare(a.name, b.name, isAsc);
-        case 'time': return this.compare(a.calories, b.calories, isAsc);
+        case 'date': return this.compare(new Date(a.date).getTime(), new Date(b.date).getTime(), isAsc);
+        case 'time': return this.compare(a.time, b.time, isAsc);
         default: return 0;
       }
     });
   }
 
-compare(a: number | string, b: number | string, isAsc: boolean) {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-}
+  compare(a: number | string, b: number | string, isAsc: boolean) {
+    return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+  }
 
   addFilter(evt){
     switch(evt.source.id){
@@ -195,18 +210,6 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
     return result
   }
 
-  show(index){
-    if(document.getElementById(index).style.display == "grid"){
-    document.getElementById(index).style.display = "none"
-    document.getElementById("more"+index).style.display = "inline"
-    document.getElementById("less"+index).style.display = "none"
-    }else{
-    document.getElementById(index).style.display = "grid"
-    document.getElementById("more"+index).style.display = "none"
-    document.getElementById("less"+index).style.display = "inline"
-    }
-  }
-
   searchFilter(){
     this.newList = [];
       var filterValue = this.search.value;
@@ -246,6 +249,10 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
     if(this.upcoming){
         this.surgeryService.getUpcomingSurgery().subscribe((res)=>{
         this.surgeryList = res['data']
+        this.surgeryList.forEach(item => {
+          item.date = new Date(item.dateTime).toLocaleDateString("en-US")
+          item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
+        });
         this.newList = this.surgeryList
         this.sortedList = this.newList.slice();
       },(err)=>{
@@ -254,6 +261,10 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
     }else{
       this.surgeryService.getPreviousSurgery().subscribe((res)=>{
         this.surgeryList = res['data']
+        this.surgeryList.forEach(item => {
+          item.date = new Date(item.dateTime).toLocaleDateString("en-US")
+          item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
+        });
         this.newList = this.surgeryList
         this.sortedList = this.newList.slice();
       },(err)=>{
@@ -266,13 +277,21 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
     if(name == 'edit'){
       this.dialog.open(DialogComponent, {
         data: {name:'edit', id:id, venueList:this.venuList, surgeonList: this.surgeonList, typeList: this.typeList},
-        disableClose: true
+        disableClose: true,
+        panelClass: "custom-dialog"
       });
     }else if(name == 'create'){
     this.dialog.open(DialogComponent, {
       data: {name:'create', id:'all', venueList:this.venuList, surgeonList: this.surgeonList, typeList: this.typeList},
-      disableClose: true
+      disableClose: true,
+      panelClass: "custom-dialog"
     });
+    }else if(name == 'status'){
+      this.dialog.open(DialogComponent, {
+        data: {name:'status', id:id},
+        disableClose: true,
+        panelClass: "custom-dialog"
+      });
     }
   }
 
@@ -317,4 +336,17 @@ compare(a: number | string, b: number | string, isAsc: boolean) {
     })
   }
 
+}
+
+export interface TableData {
+  type:string;
+  surgeon: string;
+  patient: string;
+  venue: string;
+  date: string;
+  time: string;
+  status: string;
+  prescription: string;
+  instructions: string;
+  patientAge: string;
 }

@@ -1,0 +1,41 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #drawer class="sidenav" fixedInViewport="false" [attr.role]="(((isHandset | async) || (isTablet | async)) && !(isMedium |async)) ? 'dialog' : 'navigation'" [mode]="(((isHandset | async)||(isTablet |async)) && !(isMedium|async)) ? 'over' : 'side'"
+        [opened]="((!(isHandset | async) && !(isTablet | async)) || (isMedium | async))" [ngClass]="{hidden: (isMedium | async) || (!(isHandset | async) && !(isTablet | async))}">
+        <mat-toolbar>
+            <button type="button" class="menu-btn" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()">
+                <mat-icon aria-label="Side nav toggle icon">close</mat-icon>
+            </button>
+        </mat-toolbar>
+        <mat-nav-list>
+            <a mat-list-item>Home</a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <mat-toolbar color="primary">
+            <button type="button" class="menu-btn" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" *ngIf="((isHandset | async) || (isTablet | async)) && !(isMedium |async)">
+                <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+            </button>
+            <div class="image">
+                <img src="./assets/chkd_logo.jpg">
+                <span>CHKD</span>
+            </div>
+            <span class="spacer"></span>
+            <div *ngIf="(!(isHandset | async) && !(isTablet | async)) || (isMedium | async)" style="margin-right: 0; margin-left: auto;">
+                <a routerLink="/" id="home" (click)="activate('home')" *ngIf="role == 'none'">Home</a>
+                <a routerLink="/login" id="login" (click)="openLogin()" *ngIf="role == 'none'">Login</a>
+                <a [matMenuTriggerFor]="menu" id="content" *ngIf="role == 'admin'">Manage Accounts</a>
+                <mat-menu #menu="matMenu">
+                    <button routerLink="/users" class="items" mat-menu-item>Add Users</button>
+                    <button routerLink="/surgeon" class="items" mat-menu-item>Add Surgeons</button>
+                </mat-menu>
+                <a routerLink="/surgery" id="contact" (click)="activate('contact')" *ngIf="role == 'admin'">Add Surgery Type</a>
+                <a [matMenuTriggerFor]="settings" id="content" *ngIf="role == 'admin' || role == 'pre-op' || role=='patient'">Settings</a>
+                <mat-menu #settings="matMenu">
+                    <button class="items" mat-menu-item (click)="logout()">Logout</button>
+                    <button class="items" mat-menu-item (click)="resetDialog()">Reset Password</button>
+                </mat-menu>
+            </div>
+        </mat-toolbar>
+        <ng-content></ng-content>
+    </mat-sidenav-content>
+</mat-sidenav-container>

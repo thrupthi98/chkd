@@ -1,0 +1,99 @@
+.patient-wrap {
+    padding: 60px;
+}
+
+.row {
+    margin: 0 !important;
+}
+
+h1 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-weight: bold;
+}
+
+.status {
+    padding: 20px 30px;
+}
+
+.surgery {
+    padding: 20px 0;
+}
+
+.circles {
+    height: 45px;
+    width: 45px;
+    border: 2px solid #eeeeee;
+    background-color: #eeeeee;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.active {
+    border: 2px solid rgb(5, 204, 5);
+    background-color: rgb(5, 204, 5);
+    width: 250px;
+    height: 5px;
+    margin-bottom: 13px;
+    display: inline-block;
+    text-align: center;
+    margin: "0 auto";
+}
+
+.current {
+    background-color: rgb(5, 204, 5);
+}
+
+.bar {
+    width: 250px;
+    height: 5px;
+    margin-bottom: 13px;
+    border: 2px solid #e4e3e3;
+    background-color: #e4e3e3;
+    display: inline-block;
+    text-align: center;
+    margin: "0 auto";
+}
+
+.icon {
+    margin: 8px;
+}
+
+p {
+    margin-top: 10px;
+}
+
+.color1 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid #eeeeee;
+    background-color: #eeeeee;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.color2 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid #ffa500;
+    background-color: #ffa500;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.color3 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid rgb(5, 204, 5);
+    background-color: rgb(5, 204, 5);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+small {
+    margin-top: 15px;
+}

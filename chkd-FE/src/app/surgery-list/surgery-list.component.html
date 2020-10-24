@@ -10,7 +10,7 @@
 <hr>
 <div class="surgery-wrap">
     <div *ngIf="upcoming">
-        <h1>Upcoming Surgeries</h1>
+        <h1>List of Surgeries</h1>
         <button class="btn" (click)="showPrevious()">
         Previous Surgeries
         </button>
@@ -23,7 +23,13 @@
     </div>
     <div class="row col-lg-12">
         <div class="col-lg-3">
-            <h3>Filters</h3>
+            <mat-form-field appearance="outline" class="col-lg-12">
+                <mat-label>Search</mat-label>
+                <input matInput [formControl]="search" (keyup)="searchFilter()">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+        </div>
+        <div class="col-lg-3">
             <mat-checkbox class="col-lg-12" id="type" (change)="addFilter($event)">
                 Surgery Type
             </mat-checkbox>
@@ -38,6 +44,8 @@
                     </mat-autocomplete>
                 </mat-form-field>
             </div>
+        </div>
+        <div class="col-lg-3">
             <mat-checkbox class="col-lg-12" id="surgeon" (change)="addFilter($event)">
                 Surgeon Name
             </mat-checkbox>
@@ -52,6 +60,8 @@
                     </mat-autocomplete>
                 </mat-form-field>
             </div>
+        </div>
+        <div class="col-lg-3">
             <mat-checkbox class="col-lg-12" id="venue" (change)="addFilter($event)">
                 Venue
             </mat-checkbox>
@@ -67,71 +77,61 @@
                 </mat-form-field>
             </div>
         </div>
-
-        <div class="card col-lg-9">
-            <div class="col-lg-5">
-                <mat-form-field appearance="outline" class="col-lg-12">
-                    <mat-label>Search</mat-label>
-                    <input matInput [formControl]="search" (keyup)="searchFilter()">
-                    <mat-icon matSuffix>search</mat-icon>
-                </mat-form-field>
-            </div>
-            <div class="table-responsive col-lg-12" *ngIf="newList.length != 0">
-                <table class="table" matSort (matSortChange)="sortData($event)">
-                    <thead>
-                        <tr>
-                            <th>
-                                <mat-icon (click)="openDialog('create','all')">add_circle_outline</mat-icon>
-                            </th>
-                            <th>Surgery Type</th>
-                            <th>Surgeon Name</th>
-                            <th>Patient Name</th>
-                            <th mat-sort-header="date">Date</th>
-                            <th mat-sort-header="time">Time</th>
-                            <th>Venue</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let data of sortedList; let i= index">
-                            <td>
-                                <mat-icon (click)="show(i)" id=more{{i}}>expand_more</mat-icon>
-                                <mat-icon class="less" (click)="show(i)" id=less{{i}}>expand_less</mat-icon>
-                                <mat-icon class="edit" (click)="openDialog('edit',data.id)">edit</mat-icon>
-                                <mat-icon class="delete" (click)="delete(data.id)">delete</mat-icon>
-                            </td>
-                            <td>{{data.type}}</td>
-                            <td>{{data.surgeon}}</td>
-                            <td>{{data.patient}}</td>
-                            <td>{{data.date}}</td>
-                            <td>{{data.time}}</td>
-                            <td>{{data.venue}}</td>
-                            <div class="collapse" id={{i}}>
-                                <div class="row content col-lg-12">
-                                    <div class="col-lg-1"></div>
-                                    <div class="inner col-lg-4">
-                                        <label>Prescreption</label>
-                                        <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
-                                        <p *ngIf="data.prescription == ''">No prescriptions available</p>
-                                    </div>
-                                    <div class="inner col-lg-4">
-                                        <label>Instructions</label>
-                                        <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
-                                        <p *ngIf="data.instructions == ''">No instructions available</p>
-                                    </div>
-                                    <div class="inner col-lg-2">
-                                        <label>Patient Age</label>
-                                        <p>{{data.patientAge}}</p>
-                                    </div>
-                                    <div class="col-lg-1"></div>
-                                </div>
+    </div>
+    <div class="table-responsive col-lg-12" *ngIf="newList.length != 0">
+        <table class="table" matSort (matSortChange)="sortData($event)">
+            <thead>
+                <tr>
+                    <th>
+                        <mat-icon (click)="openDialog('create','all')">add_circle_outline</mat-icon>
+                    </th>
+                    <th>Surgery Type</th>
+                    <th>Surgeon Name</th>
+                    <th>Patient Name</th>
+                    <th mat-sort-header="date">Date</th>
+                    <th mat-sort-header="time">Time</th>
+                    <th>Venue</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let data of sortedList; let i= index">
+                    <td>
+                        <mat-icon (click)="show(i)" id=more{{i}}>expand_more</mat-icon>
+                        <mat-icon class="less" (click)="show(i)" id=less{{i}}>expand_less</mat-icon>
+                        <mat-icon class="edit" (click)="openDialog('edit',data.id)">edit</mat-icon>
+                        <mat-icon class="delete" (click)="delete(data.id)">delete</mat-icon>
+                    </td>
+                    <td>{{data.type}}</td>
+                    <td>{{data.surgeon}}</td>
+                    <td>{{data.patient}}</td>
+                    <td>{{data.date}}</td>
+                    <td>{{data.time}}</td>
+                    <td>{{data.venue}}</td>
+                    <div class="collapse" id={{i}}>
+                        <div class="row content col-lg-12">
+                            <div class="col-lg-1"></div>
+                            <div class="inner col-lg-4">
+                                <label>Prescreption</label>
+                                <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
+                                <p *ngIf="data.prescription == ''">No prescriptions available</p>
                             </div>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div *ngIf="newList.length == 0">
-                <h1>No Data Available</h1>
-            </div>
-        </div>
+                            <div class="inner col-lg-4">
+                                <label>Instructions</label>
+                                <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
+                                <p *ngIf="data.instructions == ''">No instructions available</p>
+                            </div>
+                            <div class="inner col-lg-2">
+                                <label>Patient Age</label>
+                                <p>{{data.patientAge}}</p>
+                            </div>
+                            <div class="col-lg-1"></div>
+                        </div>
+                    </div>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div *ngIf="newList.length == 0">
+        <h1>No Data Available</h1>
     </div>
 </div>

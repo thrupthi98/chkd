@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/services/Login.service';
 import Swal from 'sweetalert2';
@@ -17,7 +17,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialogRef<LoginComponent>
   ) { }
 
   ngOnInit(): void {
@@ -51,13 +52,10 @@ export class LoginComponent implements OnInit {
     }else{
       this.loginService.loginAdmin(this.loginForm.value).subscribe((res)=>{
         localStorage.setItem("UUID",res['UUID']);
-        switch(res['role']){
-          case "Admin": this.router.navigateByUrl('/admin')
-          break;
-          case "Pre-op Co-ordinator": this.router.navigateByUrl('/pre-op')
-          break;
-          default: this.router.navigateByUrl('/patient')
-        }
+        this.dialog.close({
+          loggedIn: true,
+          role: res['role']
+        })
       }, (err)=>{
         if(err.error.status == "BAD_REQUEST"){
           Swal.fire({
@@ -73,6 +71,13 @@ export class LoginComponent implements OnInit {
         }
       })
     }
+  }
+
+  closeDialog(){
+    this.dialog.close({
+      loggedIn: false,
+      role: "none"
+    })
   }
 
 }

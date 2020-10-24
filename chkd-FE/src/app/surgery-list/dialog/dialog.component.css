@@ -1,7 +1,7 @@
 .title {
-    background-color: rgb(251, 255, 43);
+    background-color: #f8c045;
     text-align: center;
-    padding: 5px;
+    padding: 8px 0;
     margin-bottom: 20px;
 }
 
@@ -10,7 +10,7 @@ h1 {
     margin-top: 5px;
 }
 
-::ng-deep .mat-dialog-container {
+::ng-deep .custom-dialog .mat-dialog-container {
     padding: 0 !important;
 }
 
@@ -38,7 +38,7 @@ input::-webkit-inner-spin-button {
 }
 
 .btn {
-    background-color: rgb(251, 255, 43);
+    background-color: #f8c045;
     color: black;
     padding: 5px;
     margin-top: 5px;
@@ -62,4 +62,119 @@ input::-webkit-inner-spin-button {
     margin-right: 20px;
     margin-top: 10px;
     cursor: pointer;
+}
+
+.outer {
+    padding: 10px 30px;
+}
+
+.circles {
+    height: 45px;
+    width: 45px;
+    border: 2px solid #eeeeee;
+    background-color: #eeeeee;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.active {
+    border: 2px solid rgb(5, 204, 5);
+    background-color: rgb(5, 204, 5);
+    width: 200px;
+    height: 5px;
+    margin-bottom: 13px;
+    display: inline-block;
+    text-align: center;
+    margin: "0 auto";
+}
+
+.current {
+    background-color: rgb(5, 204, 5);
+    cursor: no-drop;
+}
+
+.bar {
+    width: 200px;
+    height: 5px;
+    margin-bottom: 13px;
+    border: 2px solid #e4e3e3;
+    background-color: #e4e3e3;
+    display: inline-block;
+    text-align: center;
+    margin: "0 auto";
+}
+
+.icon {
+    margin: 8px;
+}
+
+p {
+    margin-top: 10px;
+}
+
+.alert {
+    text-align: center;
+}
+
+.alert .mat-card {
+    display: inline-block;
+}
+
+h3 {
+    font-size: 20px;
+    text-align: center;
+}
+
+.status-btn {
+    border: none;
+    background-color: #f8c045;
+    color: black;
+    padding: 10px 40px;
+    display: inline-block;
+    border-radius: 5px;
+    margin: 20px;
+}
+
+.status-btn:hover,
+.status-btn:focus,
+.status-btn:active {
+    border: none;
+    outline: none;
+    box-shadow: none;
+}
+
+.legend {
+    margin-bottom: 40px;
+}
+
+.color1 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid #eeeeee;
+    background-color: #eeeeee;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.color2 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid #ffa500;
+    background-color: #ffa500;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.color3 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid rgb(5, 204, 5);
+    background-color: rgb(5, 204, 5);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+small {
+    margin-left: 10px;
 }

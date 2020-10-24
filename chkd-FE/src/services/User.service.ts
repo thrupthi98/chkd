@@ -14,8 +14,20 @@ export class UserService{
         return this.http.post(this.baseUri, data)
     }
 
-    getPatients(){
-        return this.http.get(`${this.baseUri}/patients`)
+    getPatients(contact){
+        return this.http.get(`${this.baseUri}/patients/${contact}`)
     }
 
+    getPatientById(id){
+        return this.http.get(`${this.baseUri}/patientbyid/${id}`)
+    }
+
+    getPatientDetails(){
+        return this.http.get(`${this.baseUri}/patientdetails`,{
+            headers: {
+                "Content-Type": "application/json",
+                "X-auth-header": localStorage.getItem("UUID"),
+              },
+        }) 
+    }
 }

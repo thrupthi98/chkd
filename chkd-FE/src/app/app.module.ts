@@ -17,6 +17,15 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSortModule} from '@angular/material/sort';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatCardModule} from '@angular/material/card';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+
+import { CarouselModule, WavesModule } from 'angular-bootstrap-md'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,6 +44,9 @@ import { UsersComponent } from './users/users.component';
 import { NoAccessComponent } from './no-access/no-access.component';
 import { SurgeonsComponent } from './surgeons/surgeons.component';
 import { ResetPassComponent } from './reset-pass/reset-pass.component';
+import { HeaderComponent } from './header/header.component';
+import { HomeComponent } from './home/home.component';
+import { PatientComponent } from './patient/patient.component';
 
 
 @NgModule({
@@ -48,7 +60,10 @@ import { ResetPassComponent } from './reset-pass/reset-pass.component';
     AdminComponent,
     NoAccessComponent,
     SurgeonsComponent,
-    ResetPassComponent
+    ResetPassComponent,
+    HeaderComponent,
+    HomeComponent,
+    PatientComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,7 +87,16 @@ import { ResetPassComponent } from './reset-pass/reset-pass.component';
     MatCheckboxModule,
     MatSortModule,
     MatTabsModule,
-    MatCardModule
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatExpansionModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    CarouselModule,
+    WavesModule
   ],
   providers: [
     MatDatepickerModule,
