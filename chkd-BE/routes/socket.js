@@ -1,3 +1,9 @@
+const express = require('express');
+const router = express.Router();
+const { nanoid } = require('nanoid');
+
+const Surgery = require("../models/surgery")
+
 const updateStatus = (io, data) => {
     let result;
     // Todo.findOneAndUpdate({ _id:T.id }, T, { new:true }, (err,todo) => {
@@ -12,10 +18,10 @@ const updateStatus = (io, data) => {
     // })
     Surgery.findOneAndUpdate({ id: data.id }, data).then(response => {
         console.log("Successfully updated the status");
-        result = { 'success': true, 'message': 'Successfully updated the status', todo };
+        result = { 'success': true, 'message': 'Successfully updated the status', 'data': data };
         io.emit('updateStatus', result);
     }).catch(error => {
-        result = { 'success': false, 'message': 'Some Error', 'error': err };
+        result = { 'success': false, 'message': 'Some Error', 'error': error };
         console.log(result);
     })
 }

@@ -67,7 +67,7 @@ export class DialogComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.socket = io.connect(this.url);
+    this.socket = io(this.url);
 
     this.venueList = this.data.venueList;
     this.surgeonList = this.data.surgeonList;
@@ -328,34 +328,17 @@ export class DialogComponent implements OnInit {
       }
   }
 
-  saveStatus(e){
+  async saveStatus(e){
     if(e == 'yes'){
       this.receivedData.id = this.data.id;
       this.receivedData.status = this.selectedSatus
-      this.surgeryService.updateStatus(this.receivedData,this.socket);
-    // this.surgeryService.updateSurgery(this.data.id, {
-    //   type: this.receivedData.type,
-    //   date: this.receivedData.date,
-    //   time: this.receivedData.time,
-    //   surgeon: this.receivedData.surgeon,
-    //   venue: this.receivedData.venue,
-    //   patient: this.receivedData.patient,
-    //   prescription: this.receivedData.prescription,
-    //   instructions: this.receivedData.instructions,
-    //   status: this.selectedSatus
-    // }).subscribe((res)=>{
-    //   Swal.fire({
-    //     text: "Status changed successfully",
-    //     icon: "success"
-    //   }).then(result =>{
-    //     location.reload()
-    //   })
-    // },(err)=>{
-    //   Swal.fire({
-    //     text: "There was an error while updating the status",
-    //     icon: "error"
-    //   })
-    // })
+      await this.surgeryService.updateStatus(this.receivedData,this.socket)
+      Swal.fire({
+        text: "Status changed successfully",
+        icon: "success"
+      }).then(result =>{
+        location.reload()
+      })
   }else{
     this.showAlert = false;
     this.currentStatus = this.temp;

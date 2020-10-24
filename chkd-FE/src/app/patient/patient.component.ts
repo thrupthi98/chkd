@@ -41,7 +41,7 @@ export class PatientComponent implements OnInit {
     })
 
     this.socket.on('updateStatus', (data) => {
-      console.log('TodoUpdated: '+JSON.stringify(data));
+      this.currentStatus[0] = this.statusNames.indexOf(data['data']['status'])
     });
   }
 

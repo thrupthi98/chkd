@@ -1,6 +1,6 @@
 {
     "name": "chkd-fe",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -29,6 +29,7 @@
         "mdbootstrap": "^4.19.1",
         "ng-material-datetimepicker": "^1.19.6",
         "rxjs": "~6.5.4",
+        "socket.io-client": "^2.3.1",
         "sweetalert2": "^10.3.5",
         "tslib": "^1.10.0",
         "zone.js": "~0.10.2"

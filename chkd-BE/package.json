@@ -1,6 +1,6 @@
 {
     "name": "chkd-be",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "CHKD backend",
     "main": "index.js",
     "scripts": {
