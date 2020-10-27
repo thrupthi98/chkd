@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { LoginService } from 'src/services/Login.service';
+import { PatientService } from 'src/services/Patient.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -13,10 +14,13 @@ import Swal from 'sweetalert2';
 export class LoginComponent implements OnInit {
 
   loginForm: FormGroup;
+  patientForm: FormGroup;
+  selectedIndex = 0;
 
   constructor(
     private fb: FormBuilder,
     private loginService: LoginService,
+    private patientService: PatientService,
     private router: Router,
     private dialog: MatDialogRef<LoginComponent>
   ) { }
@@ -25,6 +29,10 @@ export class LoginComponent implements OnInit {
     this.loginForm = this.fb.group({
       email:["",[Validators.required, Validators.email]],
       password:["",[Validators.required]]
+    })
+
+    this.patientForm = this.fb.group({
+      id: ["",[Validators.required]]
     })
   }
 
@@ -46,6 +54,14 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  nextStep(user){
+    if(user == 'admin'){
+      this.selectedIndex ++;
+    }else{
+      this.selectedIndex += 2;
+    }
+  }
+
   login(){
     if(this.loginForm.invalid){
       return false;
@@ -61,6 +77,35 @@ export class LoginComponent implements OnInit {
           Swal.fire({
             title:"Wrong Credentials",
             text:"The email/password doesnt exist. Please enter correct credentials in order to login",
+            icon:"error"
+          })
+        }else{
+          Swal.fire({
+            text:"There was a problem during login. Please try again after few minutes",
+            icon:"error"
+          })
+        }
+      })
+    }
+  }
+
+  loginPatient(){
+    if(this.patientForm.invalid){
+      return false;
+    }else{
+      this.patientService.loginPatient({
+        id: this.patientForm.controls.id.value
+      }).subscribe((res)=>{
+        localStorage.setItem("UUID",res['UUID']);
+        this.dialog.close({
+          loggedIn: true,
+          role: res['returnUrl']
+        })
+      }, (err)=>{
+        if(err.error.status == "BAD_REQUEST"){
+          Swal.fire({
+            title:"Wrong Credentials",
+            text:"The patient ID doesnt exist. Please enter correct credentials in order to login",
             icon:"error"
           })
         }else{

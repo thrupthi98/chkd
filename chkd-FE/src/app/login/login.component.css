@@ -5,7 +5,7 @@
     margin-bottom: 20px;
 }
 
-h1 {
+.header {
     margin-bottom: 5px !important;
     margin-top: 5px;
 }
@@ -63,4 +63,38 @@ input::-webkit-inner-spin-button {
     margin-right: 20px;
     margin-top: 10px;
     cursor: pointer;
+}
+
+.tag {
+    margin-bottom: 30px;
+}
+
+.admin-icon {
+    font-size: 30px;
+    border: none;
+    /* width: 100px;
+    height: 100px; */
+    padding: 60px 30px;
+    border-radius: 50%;
+}
+
+.user-icon {
+    font-size: 30px;
+    border: none;
+    /* width: 100px;
+    height: 100px; */
+    padding: 60px 30px;
+    border-radius: 50%;
+}
+
+.admin-icon:hover,
+.admin-icon:focus,
+.user-icon:hover,
+.user-icon:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+::ng-deep .mat-tab-header {
+    display: none !important;
 }

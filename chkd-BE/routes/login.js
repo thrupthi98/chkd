@@ -20,7 +20,6 @@ router.post('/', (req, res) => {
                 status: "BAD_REQUEST"
             })
         } else {
-
             var validateUser = await saltHash.validatePass(req.body.password, result.password)
             if (validateUser) {
                 var userID = token.createNewToken(result.id, result.role)
