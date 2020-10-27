@@ -12,6 +12,7 @@ const user = require("./routes/user");
 const surgeryType = require("./routes/surgeryType");
 const auth = require("./routes/auth");
 const surgeon = require("./routes/surgeon");
+const patient = require("./routes/patient");
 const socketRoute = require("./routes/socket")
 
 const app = express();
@@ -47,6 +48,7 @@ app.use('/user', user)
 app.use('/surgery-type', surgeryType)
 app.use("/auth", auth)
 app.use("/surgeon", surgeon)
+app.use("/patient", patient)
 
 
 http.listen(port, () => console.log("app running at - " + port))

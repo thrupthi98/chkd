@@ -7,7 +7,7 @@
             <div class="status">
                 <span *ngFor="let item of statusIcons; let i = index">
                 <span class="circles" [class.current]="i <= currentStatus[j]"><mat-icon class="icon">{{item}}</mat-icon></span>
-                <span [class.bar]="i >= currentStatus" [class.active]="i < currentStatus[j]" *ngIf="(i != statusIcons.length-1)"></span>
+                <span [class.bar]="i >= currentStatus[j]" [class.active]="i < currentStatus[j]" *ngIf="(i != statusIcons.length-1)"></span>
                 </span>
 
                 <div class="row justify-content-between top">
@@ -43,11 +43,13 @@
                 </div>
                 <div class="col-lg-6">
                     <h3>Prescription</h3>
-                    <p>{{data.prescription}}</p>
+                    <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
+                    <p *ngIf="data.prescription == ''">No Prescription Available</p>
                 </div>
                 <div class="col-lg-6">
                     <h3>Instructions</h3>
-                    <p>{{data.instructions}}</p>
+                    <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
+                    <p *ngIf="data.instructions == ''">No Instructions Available</p>
                 </div>
             </div>
         </mat-card>

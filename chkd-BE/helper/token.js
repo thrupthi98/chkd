@@ -1,10 +1,10 @@
 var jwt = require('jsonwebtoken');
 var sha1 = require('sha1');
 
-function createNewToken(id, password) {
+function createNewToken(id, role) {
     return jwt.sign({
         id: id,
-        password: password
+        role: role
     }, "login@181219")
 }
 

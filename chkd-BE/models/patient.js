@@ -1,37 +1,31 @@
 const mongoose = require("mongoose");
 
-const SurgerySchema = new mongoose.Schema({
+const PatientSchema = new mongoose.Schema({
     id: {
         type: String,
         required: true
     },
-    pt_id: {
+    fname: {
         type: String,
         required: true
     },
-    type: {
+    lname: {
         type: String,
         required: true
     },
-    dateTime: {
-        type: Number,
-        required: true
-    },
-    surgeon: {
+    dob: {
         type: String,
         required: true
     },
-    venue: {
+    email: {
         type: String,
         required: true
     },
-    prescription: {
-        type: String
+    contact: {
+        type: String,
+        required: true
     },
-    instructions: {
-        type: String
-    },
-    status: {
+    password: {
         type: String,
         required: true
     }
@@ -39,4 +33,4 @@ const SurgerySchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model("surgery", SurgerySchema);
+module.exports = mongoose.model("patient", PatientSchema);

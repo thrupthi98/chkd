@@ -7,17 +7,7 @@ var roles = [
 function authorize(role, url) {
     var count = 0;
     return new Promise((resolve, reject) => {
-        for (var data of roles) {
-            if (data.role == role) {
-                for (var ele of data.url) {
-                    if (url == ele) {
-                        count++;
-                        break;
-                    }
-                }
-            }
-        }
-        if (count != 0) {
+        if (roles.filter(a => a.role == role)[0].url.includes(url)) {
             resolve(true)
             console.log("authorised")
         } else {
@@ -28,5 +18,6 @@ function authorize(role, url) {
 }
 
 module.exports = {
-    authorize: authorize
+    authorize: authorize,
+    roles: roles
 }

@@ -14,9 +14,10 @@
     padding: 0 !important;
 }
 
-.col-lg-12 {
+
+/* .col-lg-12 {
     padding: 0 !important;
-}
+} */
 
 h1 {
     margin-bottom: 0 !important;
@@ -31,7 +32,7 @@ h1 {
     background-color: #f8c045;
     color: black;
     padding: 10px;
-    margin-top: 5px;
+    margin-top: 20px;
     float: right;
     margin-right: 20px;
     margin-bottom: 30px;

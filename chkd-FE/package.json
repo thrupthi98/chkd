@@ -1,6 +1,6 @@
 {
     "name": "chkd-fe",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -24,6 +24,7 @@
         "@mat-datetimepicker/core": "^5.1.0",
         "@mat-datetimepicker/moment": "^5.1.0",
         "angular-bootstrap-md": "^10.0.0",
+        "angular2-text-mask": "^9.0.0",
         "bootstrap": "^4.5.2",
         "mat-timepicker": "^5.0.1",
         "mdbootstrap": "^4.19.1",

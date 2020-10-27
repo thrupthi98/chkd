@@ -19,10 +19,10 @@ const updateStatus = (io, data) => {
     Surgery.findOneAndUpdate({ id: data.id }, data).then(response => {
         console.log("Successfully updated the status");
         result = { 'success': true, 'message': 'Successfully updated the status', 'data': data };
-        io.emit('updateStatus', result);
+        io.emit(response.pt_id, result);
     }).catch(error => {
         result = { 'success': false, 'message': 'Some Error', 'error': error };
-        console.log(result);
+        console.log(error);
     })
 }
 

@@ -5,5 +5,6 @@ export const Config = {
     user: "http://localhost:3000/user",
     surgeryType: "http://localhost:3000/surgery-type",
     access: "http://localhost:3000/auth",
-    surgeon: "http://localhost:3000/surgeon"
+    surgeon: "http://localhost:3000/surgeon",
+    patient:  "http://localhost:3000/patient"
 }

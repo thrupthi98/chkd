@@ -178,3 +178,12 @@ h3 {
 small {
     margin-left: 10px;
 }
+
+.mat-hint {
+    color: rgb(0, 132, 255);
+    cursor: pointer;
+}
+
+::ng-deep .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
+    padding: 0 !important;
+}

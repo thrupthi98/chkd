@@ -87,20 +87,7 @@ export class HeaderComponent implements OnInit{
       
       dialogRef.afterClosed().subscribe((result) => {
         if(result != undefined){
-          switch(result.role){
-            case "Admin": 
-            this.role = "admin";
-            this.router.navigateByUrl("/admin")
-            break;
-            case "Pre-op Co-ordinator": 
-            this.role = "pre-op"
-            this.router.navigateByUrl("/pre-op")
-            break;
-            case "Patient":
-            this.role = "patient"
-            this.router.navigateByUrl("/patient")
-            break;
-          }
+          this.router.navigateByUrl(result.role)
         }
       })
     }

@@ -52,7 +52,7 @@ export class SurgeryListComponent implements OnInit {
 
   venuList:any;
   surgeonList:any;
-  typeList: any;
+  typeList: any = [];
 
   filteredSurgerykywds: Observable<string[]>;
   filteredSurgeonkywds: Observable<string[]>;

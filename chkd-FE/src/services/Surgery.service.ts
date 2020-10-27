@@ -26,6 +26,15 @@ export class SurgeryService{
         return this.http.get(`${this.baseUri}/getId/${id}`)
     }
 
+    getPatientSurgery(){
+        return this.http.get(`${this.baseUri}/patientsurgery`,{
+            headers: {
+                "Content-Type": "application/json",
+                "X-auth-header": localStorage.getItem("UUID"),
+              },
+        }) 
+    }
+
     updateStatus(data:any,socket:any):void{
         socket.emit('updateStatus', data);
     }

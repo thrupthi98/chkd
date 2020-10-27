@@ -8,14 +8,6 @@ const TokenSchema = new mongoose.Schema({
     hash: {
         type: String,
         required: true
-    },
-    role: {
-        type: String,
-        required: true
-    },
-    uid: {
-        type: String,
-        required: true
     }
 }, {
     timestamps: true

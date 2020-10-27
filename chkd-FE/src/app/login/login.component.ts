@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem("UUID",res['UUID']);
         this.dialog.close({
           loggedIn: true,
-          role: res['role']
+          role: res['returnUrl']
         })
       }, (err)=>{
         if(err.error.status == "BAD_REQUEST"){

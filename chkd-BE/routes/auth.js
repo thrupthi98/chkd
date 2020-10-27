@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const jwt = require('jsonwebtoken')
 
 const Token = require("../models/token")
 
@@ -16,7 +17,8 @@ router.get('/', async(req, res) => {
                 status: "NOT_FOUND"
             })
         } else {
-            var response = await role.authorize(result.role, url);
+            var userRole = jwt.decode(result.token).role
+            var response = await role.authorize(userRole, url);
             if (response == true) {
                 res.status(200).json({
                     message: "Authorised user",
@@ -30,6 +32,7 @@ router.get('/', async(req, res) => {
             }
         }
     }).catch(err => {
+        console.log(err)
         res.status(500).json({
             message: "Error checking the token",
             status: "FAILURE"
