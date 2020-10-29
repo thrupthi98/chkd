@@ -49,7 +49,7 @@ h3 {
 }
 
 .bar {
-    width: 250px;
+    width: 245px;
     height: 5px;
     margin-bottom: 13px;
     border: 2px solid #e4e3e3;
@@ -96,4 +96,33 @@ p {
 
 small {
     margin-top: 15px;
+}
+
+::ng-deep .mat-tab-header {
+    display: none !important;
+}
+
+::ng-deep .mat-tab-body-content {
+    padding: 20px !important;
+}
+
+.outer {
+    text-align: center;
+}
+
+.button-grp {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.prev {
+    background-color: #ffa500;
+    margin: 0 10px;
+    width: 100px;
+}
+
+.next {
+    background-color: rgb(5, 204, 5);
+    margin: 0 10px;
+    width: 100px;
 }

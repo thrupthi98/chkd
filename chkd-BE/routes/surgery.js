@@ -29,6 +29,7 @@ router.post("/", (req, res) => {
             status: "SUCCESS"
         })
     }).catch(error => {
+        console.log(error)
         res.status(500).json({
             message: "Problem occured while creating the surgery",
             status: "FAILURE"
@@ -139,7 +140,40 @@ router.get("/patientsurgery", (req, res) => {
             })
         } else {
             var userId = jwt.decode(result.token).id
-            Surgery.find({ pt_id: userId }).then((response) => {
+            Surgery.aggregate([{
+                    $lookup: {
+                        from: "patients",
+                        localField: "pt_id",
+                        foreignField: "id",
+                        as: "patientDetails"
+                    }
+                },
+                {
+                    $match: {
+                        pt_id: {
+                            $eq: userId
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        dateTime: 1
+                    }
+                },
+                {
+                    $unset: [
+                        "patientDetails.id",
+                        "patientDetails.dob",
+                        "patientDetails.email",
+                        "patientDetails.contact",
+                        "patientDetails.password",
+                        "patientDetails.createdAt",
+                        "patientDetails.updatedAt",
+                    ]
+
+                }
+
+            ]).then((response) => {
                 res.status(200).json({
                     message: "patient surgery fetch successfully",
                     status: 'SUCCESS',

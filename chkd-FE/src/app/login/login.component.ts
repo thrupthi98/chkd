@@ -102,7 +102,7 @@ export class LoginComponent implements OnInit {
           role: res['returnUrl']
         })
       }, (err)=>{
-        if(err.error.status == "BAD_REQUEST"){
+        if(err.error.status == "NOT_FOUND"){
           Swal.fire({
             title:"Wrong Credentials",
             text:"The patient ID doesnt exist. Please enter correct credentials in order to login",

@@ -1,3 +1,3 @@
 module.exports = {
-    "dbUrl": "mongodb+srv://admin:admin@123@tedora-l5n5y.gcp.mongodb.net/chkd",
+    "dbUrl": "mongodb+srv://admin:chkdadmin@cluster0.mnxd4.mongodb.net/chkd",
 }

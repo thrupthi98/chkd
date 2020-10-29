@@ -66,7 +66,7 @@
             </form>
             <div *ngIf="showDetails">
                 <form [formGroup]="registerForm">
-                    <div class="row col-lg-12">
+                    <div class="row col-lg-12" *ngIf="newUser">
                         <mat-form-field appearance="outline" class="col-lg-4">
                             <mat-label>First Name</mat-label>
                             <input matInput formControlName="fname" required/>
@@ -77,7 +77,26 @@
                         </mat-form-field>
                         <mat-form-field appearance="outline" class="col-lg-4">
                             <mat-label>Date of Birth</mat-label>
-                            <input matInput [matDatepicker]="picker1" formControlName="dob" (click)="picker1.open()" [max]="today" [disabled]="!newUser" readonly required/>
+                            <input matInput [matDatepicker]="picker1" formControlName="dob" (click)="picker1.open()" [max]="today" readonly required/>
+                            <mat-datepicker touchUi #picker1></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                    <div class="row col-lg-12" *ngIf="!newUser">
+                        <mat-form-field appearance="outline" class="col-lg-6">
+                            <mat-label>Name</mat-label>
+                            <mat-select formControlName="fname" required>
+                                <mat-option *ngFor="let data of names; let i = index" [value]="data" (click)="getDetails(i)">
+                                    {{data}}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <!-- <mat-form-field appearance="outline" class="col-lg-4">
+                            <mat-label>Last Name</mat-label>
+                            <input matInput formControlName="lname" required/>
+                        </mat-form-field> -->
+                        <mat-form-field appearance="outline" class="col-lg-6">
+                            <mat-label>Date of Birth</mat-label>
+                            <input matInput [matDatepicker]="picker1" formControlName="dob" (click)="picker1.open()" [max]="today" disabled readonly required/>
                             <mat-datepicker touchUi #picker1></mat-datepicker>
                         </mat-form-field>
                     </div>

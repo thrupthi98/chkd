@@ -21,6 +21,8 @@ export class DialogComponent implements OnInit {
   private socket;
 
   patientId;
+  patientDetails;
+  names = [];
 
   types: any = [
     {value: 'Orthopedic Surgery'},
@@ -179,13 +181,17 @@ export class DialogComponent implements OnInit {
         this.patientService.getPatientByContact(strValue.split("-").join('')).subscribe((res)=>{
           this.showDetails = true;
           this.newUser = false;
-          this.patientId = res['data'].id
-            this.registerForm = this.fb.group({
-              fname:[{value: res['data'].fname, disabled: true},Validators.required],
-              lname:[{value: res['data'].lname, disabled: true},Validators.required],
-              dob:[new Date(res['data'].dob),Validators.required],
-              // email:[{value: res['data'].email, disabled: true},[Validators.required, Validators.email]],
-            })
+          this.names = []
+          this.patientDetails = res['data']
+          for(var data of this.patientDetails){
+            this.names.push(data.fname + " " + data.lname)
+          }
+          this.registerForm = this.fb.group({
+            fname:["",Validators.required],
+            lname:[{value: "", disabled: true},Validators.required],
+            dob:[{value: "", disabled: true},Validators.required],
+            // email:["",[Validators.required, Validators.email]],
+          })
         }, (err)=>{
           if(err.error.status == "NOT_FOUND"){
             this.showDetails = false;
@@ -210,6 +216,16 @@ export class DialogComponent implements OnInit {
       fname:["",Validators.required],
       lname:["",Validators.required],
       dob:["",Validators.required],
+      // email:["",[Validators.required, Validators.email]],
+    })
+  }
+
+  getDetails(index){
+    this.patientId = this.patientDetails[index].id;
+    this.registerForm = this.fb.group({
+      fname:[this.names[index],Validators.required],
+      lname:[{value: this.patientDetails[index].lname, disabled: true},Validators.required],
+      dob:[{value: new Date(this.patientDetails[index].dob), disabled: true},Validators.required],
       // email:["",[Validators.required, Validators.email]],
     })
   }

@@ -7,29 +7,37 @@ const Users = require("../models/user")
 const Token = require("../models/token")
 
 const generateId = require("../helper/generateId");
+const saltHash = require("../helper/saltHash");
 const token = require("../helper/token");
 const roles = require('../helper/roles').roles;
 
 
 router.post("/", (req, res) => {
-    Patient.findOne({ fname: req.body.fname, lname: req.body.lname, dob: req.body.dob, contact: req.body.contact }).then(result => {
+    Patient.findOne({ fname: req.body.fname, lname: req.body.lname, dob: req.body.dob, contact: req.body.contact }).then(async(result) => {
         if (result != null || result != undefined) {
             res.status(400).json({
                 message: "Patient already exists",
                 status: 'BAD_REQUEST'
             })
         } else {
-            var patId = generateId.createId();
-            var patMail = generateId.createMail(patId);
+            var patId = await generateId.createId();
+            var patMail = await generateId.createMail(patId);
+            var hashId = await saltHash.genSalt(patId.toString())
             Patient.create({
-                id: patId,
+                id: nanoid(9),
                 fname: req.body.fname,
                 lname: req.body.lname,
                 dob: req.body.dob,
                 email: patMail,
                 contact: req.body.contact,
-                password: nanoid(12)
-            }).then(result => {}).catch(err => {
+                password: hashId,
+            }).then(response => {
+                res.status(200).json({
+                    message: "login successful",
+                    status: "SUCCESS",
+                    id: response.id,
+                })
+            }).catch(err => {
                 console.log(err)
                 res.status(500).json({
                     message: "Problem while creating the patient",
@@ -40,41 +48,51 @@ router.post("/", (req, res) => {
     })
 })
 
-router.post("/login", (req, res) => {
-    Patient.findOne({ id: req.body.id }).then(result => {
+router.post("/login", async(req, res) => {
+    var emailId = req.body.id + "@gmail.com";
+    Patient.findOne({ email: emailId }).then(async(result) => {
         if (result == null || result == undefined) {
-            res.status(400).json({
-                message: "Patient already exists",
-                status: 'BAD_REQUEST'
+            res.status(404).json({
+                message: "Patient not found",
+                status: 'NOT_FOUND'
             })
         } else {
-            var userID = token.createNewToken(result.id, "Patient")
-            var UUID = token.hashIt(userID)
-            Token.create({
-                token: userID,
-                hash: UUID,
-            }).then(response => {
-                res.status(200).json({
-                    message: "login successful",
-                    status: "SUCCESS",
-                    UUID: response.hash,
-                    returnUrl: roles.filter(data => data.role == "Patient")[0].url[0]
+            var loggedIn = await saltHash.validatePass(req.body.id, result.password)
+            if (loggedIn) {
+                var userID = token.createNewToken(result.id, "Patient")
+                var UUID = token.hashIt(userID)
+                Token.create({
+                    token: userID,
+                    hash: UUID,
+                }).then(response => {
+                    res.status(200).json({
+                        message: "login successful",
+                        status: "SUCCESS",
+                        UUID: response.hash,
+                        returnUrl: roles.filter(data => data.role == "Patient")[0].url[0]
+                    })
+                }).catch(error => {
+                    console.log(error);
+                    res.status(500).json({
+                        message: "Problem creating token",
+                        status: "FAILURE"
+                    })
                 })
-            }).catch(error => {
-                console.log(error);
-                res.status(500).json({
-                    message: "Problem creating token",
-                    status: "FAILURE"
+            } else {
+                console.log("hello")
+                res.status(404).json({
+                    message: "Patient not found",
+                    status: 'NOT_FOUND'
                 })
-            })
+            }
         }
     })
 })
 
 router.get("/contact", (req, res) => {
     var phNo = req.header("x-auth-header");
-    Patient.findOne({ contact: phNo }).then((result) => {
-        if (result != null || result != undefined) {
+    Patient.find({ contact: phNo }).then((result) => {
+        if (result.length != 0) {
             res.status(200).json({
                 message: "patient details fetch successfully",
                 status: 'SUCCESS',

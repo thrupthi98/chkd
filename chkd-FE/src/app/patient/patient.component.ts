@@ -17,6 +17,8 @@ export class PatientComponent implements OnInit {
   patientDetails: any = [];
   patient;
 
+  selectedIndex = 0;
+
   statusNames = ['Surgery Scheduled','Patient Checked in','Patient In Surgery', 'Post Surgery', 'Patient Discharged'];
   statusIcons = ['alarm_on','weekend','airline_seat_flat','accessible','check_circle'];
   currentStatus: any = [];
@@ -38,7 +40,7 @@ export class PatientComponent implements OnInit {
         this.surgeryIds.push(data.id)
       }
 
-      this.patient = this.patientDetails[0].patient;
+      this.patient = this.patientDetails[0].patientDetails[0].fname + " "+this.patientDetails[0].patientDetails[0].lname;
 
       this.socket.on(this.patientDetails[0].pt_id, (data) => {
         this.currentStatus[this.surgeryIds.indexOf(data['data']['id'])] = this.statusNames.indexOf(data['data']['status'])
@@ -52,6 +54,14 @@ export class PatientComponent implements OnInit {
     }, (err)=>{
       this.router.navigateByUrl("/")
     })
+  }
+
+  prev(){
+    this.selectedIndex --;
+  }
+
+  next(){
+    this.selectedIndex ++;
   }
 
 }

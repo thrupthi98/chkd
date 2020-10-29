@@ -1,8 +1,8 @@
 <div class="patient-wrap">
     <h2>Welcome! {{patient}}</h2>
     <h1>Your Surgeries</h1>
-    <div class="list" *ngFor="let data of patientDetails; let j= index">
-        <mat-card>
+    <mat-tab-group mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4" animationDuration="0ms" [selectedIndex]="selectedIndex">
+        <mat-tab class="list" *ngFor="let data of patientDetails; let j= index">
             <h2>Surgery Status</h2>
             <div class="status">
                 <span *ngFor="let item of statusIcons; let i = index">
@@ -52,6 +52,12 @@
                     <p *ngIf="data.instructions == ''">No Instructions Available</p>
                 </div>
             </div>
-        </mat-card>
+        </mat-tab>
+    </mat-tab-group>
+    <div class="outer">
+        <div class="button-grp">
+            <button class="btn prev" *ngIf="selectedIndex != 0" (click)="prev()">Previous</button>
+            <button class="btn next" *ngIf="selectedIndex != (patientDetails.length)-1" (click)="next()">Next</button>
+        </div>
     </div>
 </div>
