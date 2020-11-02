@@ -30,7 +30,16 @@ export class SurgeryService{
         return this.http.get(`${this.baseUri}/patientsurgery`,{
             headers: {
                 "Content-Type": "application/json",
-                "X-auth-header": localStorage.getItem("UUID"),
+                "X-auth-header": sessionStorage.getItem("UUID"),
+              },
+        }) 
+    }
+
+    getPatientPreviousSurgery(){
+        return this.http.get(`${this.baseUri}/prevpatientsurgery`,{
+            headers: {
+                "Content-Type": "application/json",
+                "X-auth-header": sessionStorage.getItem("UUID"),
               },
         }) 
     }

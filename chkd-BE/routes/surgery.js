@@ -9,7 +9,8 @@ const jwt = require("jsonwebtoken");
 const Surgery = require("../models/surgery")
 const Token = require("../models/token")
 
-const generateId = require("../helper/generateId")
+const generateId = require("../helper/generateId");
+const Patient = require('../models/patient');
 
 router.post("/", (req, res) => {
     Surgery.create({
@@ -88,9 +89,17 @@ router.get("/previous", (req, res) => {
         },
         {
             $match: {
-                status: {
-                    $eq: "Patient Discharged"
-                }
+                $or: [{
+                        dateTime: {
+                            $lt: new Date().getTime()
+                        }
+                    },
+                    {
+                        status: {
+                            $eq: "Patient Discharged"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -140,40 +149,48 @@ router.get("/patientsurgery", (req, res) => {
             })
         } else {
             var userId = jwt.decode(result.token).id
-            Surgery.aggregate([{
-                    $lookup: {
-                        from: "patients",
-                        localField: "pt_id",
-                        foreignField: "id",
-                        as: "patientDetails"
-                    }
-                },
-                {
-                    $match: {
-                        pt_id: {
-                            $eq: userId
-                        }
-                    }
-                },
-                {
-                    $sort: {
-                        dateTime: 1
-                    }
-                },
-                {
-                    $unset: [
-                        "patientDetails.id",
-                        "patientDetails.dob",
-                        "patientDetails.email",
-                        "patientDetails.contact",
-                        "patientDetails.password",
-                        "patientDetails.createdAt",
-                        "patientDetails.updatedAt",
-                    ]
+            Surgery.find({ pt_id: userId, dateTime: { $gte: new Date().getTime() }, status: { $ne: "Patient Discharged" } }).sort({ dateTime: 1 }).then((response) => {
+                Patient.findOne({ id: userId }, { fname: 1, lname: 1 }).then((result) => {
+                    res.status(200).json({
+                        message: "patient surgery fetch successfully",
+                        status: 'SUCCESS',
+                        data: response,
+                        name: result.fname + " " + result.lname
+                    })
+                })
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({
+                    message: "paroblem fetching patient surgery details",
+                    status: 'FAILURE'
+                })
+            })
+        }
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            message: "paroblem fetching patient surgery",
+            status: 'FAILURE'
+        })
+    })
+})
 
-                }
-
-            ]).then((response) => {
+router.get("/prevpatientsurgery", (req, res) => {
+    var token = req.header("x-auth-header");
+    Token.findOne({ hash: token }).then(async(result) => {
+        if (result == null || result == undefined) {
+            res.status(404).json({
+                message: "No token Present",
+                status: "NOT_FOUND"
+            })
+        } else {
+            var userId = jwt.decode(result.token).id
+            Surgery.find({
+                $and: [
+                    { $or: [{ pt_id: userId }] },
+                    { $or: [{ status: "Patient Discharged" }, { dateTime: { $lt: new Date().getTime() } }] }
+                ]
+            }).sort({ dateTime: 1 }).then((response) => {
                 res.status(200).json({
                     message: "patient surgery fetch successfully",
                     status: 'SUCCESS',

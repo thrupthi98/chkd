@@ -128,6 +128,10 @@ label {
     color: red;
 }
 
+.chat {
+    color: greenyellow;
+}
+
 .header-btn {
     margin-top: 10px;
     background-color: #f8c045;
@@ -203,4 +207,9 @@ h3 {
 
 .mat-card {
     padding: 10px;
+}
+
+::ng-deep .ng-chat-window {
+    bottom: 20% !important;
+    right: 70% !important;
 }

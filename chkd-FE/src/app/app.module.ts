@@ -27,6 +27,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { CarouselModule, WavesModule } from 'angular-bootstrap-md';
 import { TextMaskModule } from 'angular2-text-mask';
+import { NgChatModule } from 'ng-chat';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -98,7 +99,8 @@ import { PatientComponent } from './patient/patient.component';
     MatSidenavModule,
     CarouselModule,
     WavesModule,
-    TextMaskModule
+    TextMaskModule,
+    NgChatModule
   ],
   providers: [
     MatDatepickerModule,

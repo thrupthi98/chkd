@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
@@ -15,6 +15,10 @@ import Swal from 'sweetalert2';
 import { ResetPassComponent } from '../reset-pass/reset-pass.component';
 import { DialogComponent } from '../surgery-list/dialog/dialog.component';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { ChatAdapter, ChatParticipantStatus, ChatParticipantType, IChatController } from 'ng-chat';
+import { MessageAdapter } from '../adapter/message-adapter';
+import { PatientService } from 'src/services/Patient.service';
+import { MessagesService } from 'src/services/Messages.service';
 
 @Component({
   selector: 'app-admin',
@@ -30,6 +34,11 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 })
 export class AdminComponent implements OnInit {
 
+  @ViewChild('ngChatInstance') protected ngChatInstance: IChatController;
+
+  public adapter: ChatAdapter;
+  userId = 999;
+
   types: any = [
     {value: 'Surgery Type'},
     {value: 'Surgeon Name'},
@@ -40,6 +49,8 @@ export class AdminComponent implements OnInit {
   expandedElement: TableData | null;
 
   role;
+
+  patientsData;
 
   upcoming:Boolean = true;
 
@@ -78,12 +89,14 @@ export class AdminComponent implements OnInit {
     private surgeonService : SurgeonService,
     private loginService: LoginService,
     private router: Router,
-    private authenticationService: AuthService
+    private authenticationService: AuthService,
+    private patientService: PatientService,
+    private messagesService: MessagesService
   ) { }
 
   ngOnInit(): void {
-
-  let url = this.router.url;
+    this.adapter = new MessageAdapter(this.patientService, this.messagesService);
+    let url = this.router.url;
 
   this.authenticationService.checkAccess(url).subscribe((res)=>{
     this.kywdsService.getKywds().subscribe((res)=>{
@@ -325,8 +338,8 @@ export class AdminComponent implements OnInit {
   }
 
   logout(){
-    this.loginService.logoutAdmin(localStorage.getItem("UUID")).subscribe((res)=>{
-      localStorage.removeItem("UUID")
+    this.loginService.logoutAdmin(sessionStorage.getItem("UUID")).subscribe((res)=>{
+      sessionStorage.removeItem("UUID")
       this.router.navigateByUrl("/")
     },(err)=>{
       Swal.fire({
@@ -334,6 +347,18 @@ export class AdminComponent implements OnInit {
         icon:"error"
       })
     })
+  }
+
+  openChatWindow(id,surgery,patientFname, patientLname){
+    let user = {
+      participantType: ChatParticipantType.User,
+      id: id,
+      displayName: patientFname+" "+patientLname+"("+surgery+")",
+      avatar: "https://i.stack.imgur.com/ZQT8Z.png",
+      status: ChatParticipantStatus.Online
+      };
+      console.log('openChat clicked');
+      this.ngChatInstance.triggerOpenChatWindow(user);
   }
 
 }
