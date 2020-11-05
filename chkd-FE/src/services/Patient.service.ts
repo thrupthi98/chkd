@@ -18,6 +18,10 @@ export class PatientService{
         return this.http.post(`${this.baseUri}/login`, id)
     }
 
+    getAllPatients(){
+        return this.http.get(`${this.baseUri}/getall`)
+    }
+
     getPatientById(id){
        return this.http.get(`${this.baseUri}/id`, { 
             headers: {

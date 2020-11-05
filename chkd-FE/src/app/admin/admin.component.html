@@ -74,6 +74,8 @@
 
                     <mat-icon class="edit" (click)="openDialog('edit',row.id)">edit</mat-icon>
                     <mat-icon class="delete" (click)="delete(row.id)">delete</mat-icon>
+                    <mat-icon class="chat" matBadge={{row.messages}} matBadgeColor="warn" [matBadgeHidden]="row.messages == 0" (click)="openChatWindow(row.id,row.type, row.patientDetails[0].fname, row.patientDetails[0].lname)">
+                        message</mat-icon>
                 </td>
             </ng-container>
 
@@ -142,7 +144,7 @@
                                         <p><strong>Contact: </strong>{{element.patientDetails[0].contact}}</p>
                                         <p><strong>User ID: </strong>{{element.patientDetails[0].id}}</p>
                                         <p><strong>Email: </strong>{{element.patientDetails[0].email}}</p>
-                                        <p><strong>Password: </strong>{{element.patientDetails[0].password}}</p>
+                                        <p><strong>Date of Birth: </strong>{{element.patientDetails[0].dob}}</p>
                                     </mat-card>
                                 </div>
                             </div>
@@ -163,4 +165,5 @@
 
         <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </div>
+    <ng-chat *ngIf="adapter != null && adapter != undefined" #ngChatInstance [hideFriendsList]="true" [adapter]="adapter" [userId]="userId"></ng-chat>
 </div>

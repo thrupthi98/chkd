@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
@@ -15,6 +15,13 @@ import Swal from 'sweetalert2';
 import { ResetPassComponent } from '../reset-pass/reset-pass.component';
 import { DialogComponent } from '../surgery-list/dialog/dialog.component';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { ChatAdapter, ChatParticipantStatus, ChatParticipantType, IChatController } from 'ng-chat';
+import { MessageAdapter } from '../adapter/message-adapter';
+import { PatientService } from 'src/services/Patient.service';
+import { MessagesService } from 'src/services/Messages.service';
+import io from "socket.io-client";
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-admin',
@@ -30,6 +37,11 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 })
 export class AdminComponent implements OnInit {
 
+  @ViewChild('ngChatInstance') protected ngChatInstance: IChatController;
+
+  public adapter: ChatAdapter;
+  userId = 999;
+
   types: any = [
     {value: 'Surgery Type'},
     {value: 'Surgeon Name'},
@@ -40,6 +52,8 @@ export class AdminComponent implements OnInit {
   expandedElement: TableData | null;
 
   role;
+
+  patientsData;
 
   upcoming:Boolean = true;
 
@@ -70,6 +84,9 @@ export class AdminComponent implements OnInit {
   filteredSurgeonkywds: Observable<string[]>;
   filteredVenuekywds: Observable<string[]>;
 
+  private Soketurl = 'http://localhost:3000';
+  private socket;
+
   constructor(
     public dialog: MatDialog,
     private surgeryService: SurgeryService,
@@ -78,12 +95,16 @@ export class AdminComponent implements OnInit {
     private surgeonService : SurgeonService,
     private loginService: LoginService,
     private router: Router,
-    private authenticationService: AuthService
+    private authenticationService: AuthService,
+    private patientService: PatientService,
+    private messagesService: MessagesService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
+    this.socket = io.connect(this.Soketurl);
 
-  let url = this.router.url;
+    let url = this.router.url;
 
   this.authenticationService.checkAccess(url).subscribe((res)=>{
     this.kywdsService.getKywds().subscribe((res)=>{
@@ -124,9 +145,21 @@ export class AdminComponent implements OnInit {
       });
       this.newList = this.surgeryList
       this.sortedList = this.newList.slice();
+      this.sortedList.forEach(element => {
+        element['messages'] = 0;
+      });
     }, (err)=>{
       console.log("error")
     })
+
+    this.socket.on(999, (data) => {
+      this.ngChatInstance.triggerCloseChatWindow(data['data']['fromId'])
+      this.sortedList.forEach(element => {
+        if(element.id == data['data']['fromId']){
+          element['messages']++;
+        }
+      });
+    });
 
   }, (err)=>{
     if(err.error != undefined && err.error.status == "UN_AUTHORISED"){
@@ -238,7 +271,10 @@ export class AdminComponent implements OnInit {
       || option.venue.toLowerCase().includes(filterValue.toLowerCase())
       || option.date.toLowerCase().includes(filterValue.toLowerCase())
       || option.time.toLowerCase().includes(filterValue.toLowerCase())
-      || option.patient.toLowerCase().includes(filterValue.toLowerCase())
+      || option.patientDetails[0].fname.toLowerCase().includes(filterValue.toLowerCase())
+      || option.patientDetails[0].lname.toLowerCase().includes(filterValue.toLowerCase())
+      || option.patientDetails[0].contact.toLowerCase().includes(filterValue.toLowerCase())
+      || option.patientDetails[0].dob.toLowerCase().includes(filterValue.toLowerCase())
       )
     )
     this.sortedList = this.newList;
@@ -325,8 +361,8 @@ export class AdminComponent implements OnInit {
   }
 
   logout(){
-    this.loginService.logoutAdmin(localStorage.getItem("UUID")).subscribe((res)=>{
-      localStorage.removeItem("UUID")
+    this.loginService.logoutAdmin(sessionStorage.getItem("UUID")).subscribe((res)=>{
+      sessionStorage.removeItem("UUID")
       this.router.navigateByUrl("/")
     },(err)=>{
       Swal.fire({
@@ -334,6 +370,24 @@ export class AdminComponent implements OnInit {
         icon:"error"
       })
     })
+  }
+
+  openChatWindow(id,surgery,patientFname, patientLname){
+    this.sortedList.forEach(element => {
+      if(element.id == id){
+        element['messages']= 0;
+      }
+    });
+    let user = {
+      participantType: ChatParticipantType.User,
+      id: id,
+      displayName: patientFname+" "+patientLname+"("+surgery+")",
+      avatar: "https://i.stack.imgur.com/ZQT8Z.png",
+      status: ChatParticipantStatus.Online
+      };
+    this.adapter = new MessageAdapter(this.patientService, this.messagesService, this.http, id);
+    setTimeout(()=>this.ngChatInstance.triggerOpenChatWindow(user), 500);
+      
   }
 
 }

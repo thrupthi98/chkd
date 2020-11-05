@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 var cors = require("cors");
 const connectDb = require("./database/db");
+const firebase = require('./helper/firebase');
 
 const surgery = require("./routes/surgery");
 const keywds = require("./routes/keywds");
@@ -13,6 +14,7 @@ const surgeryType = require("./routes/surgeryType");
 const auth = require("./routes/auth");
 const surgeon = require("./routes/surgeon");
 const patient = require("./routes/patient");
+const messages = require("./routes/messages");
 const socketRoute = require("./routes/socket")
 
 const app = express();
@@ -26,6 +28,9 @@ io.on('connection', (socket) => {
         console.log('socketData: ' + JSON.stringify(data));
         socketRoute.updateStatus(io, data);
     });
+    socket.on('sendMessage', (data) => {
+        socketRoute.sendMessage(io, data);
+    })
 })
 
 connectDb();
@@ -49,6 +54,14 @@ app.use('/surgery-type', surgeryType)
 app.use("/auth", auth)
 app.use("/surgeon", surgeon)
 app.use("/patient", patient)
+app.use("/messages", messages)
+
+app.get('/haha', (req, res) => {
+    firebase.fetchUsers()
+    res.status(200).json({
+        me: "Hello"
+    })
+})
 
 
 http.listen(port, () => console.log("app running at - " + port))

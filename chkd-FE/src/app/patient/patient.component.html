@@ -1,63 +1,156 @@
 <div class="patient-wrap">
     <h2>Welcome! {{patient}}</h2>
+    <div *ngIf="upcoming">
+        <button class="btn history" (click)="showPrevious()">
+           History
+        </button>
+    </div>
+    <div *ngIf="!upcoming">
+        <button class="btn history" (click)="showPrevious()">
+            Upcoming Surgeries
+        </button>
+    </div>
     <h1>Your Surgeries</h1>
-    <mat-tab-group mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4" animationDuration="0ms" [selectedIndex]="selectedIndex">
-        <mat-tab class="list" *ngFor="let data of patientDetails; let j= index">
-            <h2>Surgery Status</h2>
-            <div class="status">
-                <span *ngFor="let item of statusIcons; let i = index">
+    <div *ngIf="upcoming">
+        <mat-tab-group mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4" animationDuration="0ms" [selectedIndex]="selectedIndex">
+            <mat-tab class="list" *ngFor="let data of patientDetails; let j= index">
+                <mat-icon class="message" matBadge={{messageNumbers[j]}} matBadgeColor="warn" [matBadgeHidden]="messageNumbers[j]==0" (click)="openChat(data.id, data.type)">message</mat-icon>
+                <h2>Surgery Status</h2>
+                <div class="status">
+                    <span *ngFor="let item of statusIcons; let i = index">
                 <span class="circles" [class.current]="i <= currentStatus[j]"><mat-icon class="icon">{{item}}</mat-icon></span>
-                <span [class.bar]="i >= currentStatus[j]" [class.active]="i < currentStatus[j]" *ngIf="(i != statusIcons.length-1)"></span>
-                </span>
+                    <span [class.bar]="i >= currentStatus[j]" [class.active]="i < currentStatus[j]" *ngIf="(i != statusIcons.length-1)"></span>
+                    </span>
 
-                <div class="row justify-content-between top">
-                    <div class="row d-flex icon-content" *ngFor="let name of statusNames">
-                        <div class="d-flex flex-column">
-                            <small>{{name}}</small>
+                    <div class="row justify-content-between top">
+                        <div class="row d-flex icon-content" *ngFor="let name of statusNames">
+                            <div class="d-flex flex-column">
+                                <small>{{name}}</small>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <hr>
+                <h2>Surgery Details</h2>
+                <div class="surgery row col-lg-12">
+                    <div class="col-lg-3">
+                        <h3>Surgery Type</h3>
+                        <p>{{data.type}}</p>
+                    </div>
+                    <div class="col-lg-3">
+                        <h3>Surgeon Name</h3>
+                        <p>{{data.surgeon}}</p>
+                    </div>
+                    <div class="col-lg-2">
+                        <h3>Venue</h3>
+                        <p>{{data.venue}}</p>
+                    </div>
+                    <div class="col-lg-2">
+                        <h3>Date</h3>
+                        <p>{{data.date}}</p>
+                    </div>
+                    <div class="col-lg-2">
+                        <h3>Time</h3>
+                        <p>{{data.time}}</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <h3>Prescription</h3>
+                        <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
+                        <p *ngIf="data.prescription == ''">No Prescription Available</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <h3>Instructions</h3>
+                        <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
+                        <p *ngIf="data.instructions == ''">No Instructions Available</p>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+        <div class="outer">
+            <div class="button-grp">
+                <button class="btn prev" *ngIf="selectedIndex != 0 && patientDetails.lenght != 0" (click)="prev()">Previous</button>
+                <button class="btn next" *ngIf="(selectedIndex != (patientDetails.length)-1) && patientDetails.length != 0" (click)="next()">Next</button>
             </div>
-            <hr>
-            <h2>Surgery Details</h2>
-            <div class="surgery row col-lg-12">
-                <div class="col-lg-3">
-                    <h3>Surgery Type</h3>
-                    <p>{{data.type}}</p>
-                </div>
-                <div class="col-lg-3">
-                    <h3>Surgeon Name</h3>
-                    <p>{{data.surgeon}}</p>
-                </div>
-                <div class="col-lg-2">
-                    <h3>Venue</h3>
-                    <p>{{data.venue}}</p>
-                </div>
-                <div class="col-lg-2">
-                    <h3>Date</h3>
-                    <p>{{data.date}}</p>
-                </div>
-                <div class="col-lg-2">
-                    <h3>Time</h3>
-                    <p>{{data.time}}</p>
-                </div>
-                <div class="col-lg-6">
-                    <h3>Prescription</h3>
-                    <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
-                    <p *ngIf="data.prescription == ''">No Prescription Available</p>
-                </div>
-                <div class="col-lg-6">
-                    <h3>Instructions</h3>
-                    <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
-                    <p *ngIf="data.instructions == ''">No Instructions Available</p>
-                </div>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
-    <div class="outer">
-        <div class="button-grp">
-            <button class="btn prev" *ngIf="selectedIndex != 0" (click)="prev()">Previous</button>
-            <button class="btn next" *ngIf="selectedIndex != (patientDetails.length)-1" (click)="next()">Next</button>
         </div>
     </div>
+    <div *ngIf="!upcoming">
+        <table mat-table [dataSource]="patientDetails" multiTemplateDataRows>
+
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-icon (click)="expandedElement = expandedElement === row ? null : row" *ngIf="expandedElement != row">expand_more</mat-icon>
+                    <mat-icon (click)="expandedElement = expandedElement === row ? null : row" *ngIf="expandedElement == row">expand_less</mat-icon>
+                </td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+                <th mat-header-cell *matHeaderCellDef> Surgery Type </th>
+                <td mat-cell *matCellDef="let row"> {{row.type}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="surgeon">
+                <th mat-header-cell *matHeaderCellDef>Surgeon Name</th>
+                <td mat-cell *matCellDef="let row"> {{row.surgeon}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="date">
+                <th mat-header-cell *matHeaderCellDef> Date </th>
+                <td mat-cell *matCellDef="let row"> {{row.date}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="time">
+                <th mat-header-cell *matHeaderCellDef> Time </th>
+                <td mat-cell *matCellDef="let row"> {{row.time}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="venue">
+                <th mat-header-cell *matHeaderCellDef> Venue </th>
+                <td mat-cell *matCellDef="let row"> {{row.venue}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="expandedDetail">
+                <td mat-cell *matCellDef="let element" [attr.colspan]="tableColumns.length">
+                    <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                        <div class="example-element-description">
+                            <div class="row col-lg-12">
+                                <div class="col-lg-6">
+                                    <mat-card>
+                                        <h2>Prescription</h2>
+                                        <p *ngIf="element.prescription != ''">{{element.prescription}}</p>
+                                        <p *ngIf="element.prescription == ''">No Prescription Available</p>
+                                    </mat-card>
+                                </div>
+                                <div class="col-lg-6">
+                                    <mat-card>
+                                        <h2>Instructions</h2>
+                                        <p *ngIf="element.instructions != ''">{{element.instructions}}</p>
+                                        <p *ngIf="element.instructions == ''">No Instructions Available</p>
+                                    </mat-card>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
+            <tr mat-row *matRowDef="let element; columns: tableColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement == element">
+            </tr>
+            <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+                <td class="mat-cell" colspan="4">No data matching the filter</td>
+            </tr>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+    <ng-chat *ngIf="adapter != null && adapter != undefined" #ngChatInstance [hideFriendsList]="true" [adapter]="adapter" [userId]="userId"></ng-chat>
 </div>

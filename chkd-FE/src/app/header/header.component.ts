@@ -98,8 +98,8 @@ export class HeaderComponent implements OnInit{
 
 
   logout(){
-    this.loginService.logoutAdmin(localStorage.getItem("UUID")).subscribe((res)=>{
-      localStorage.removeItem("UUID")
+    this.loginService.logoutAdmin(sessionStorage.getItem("UUID")).subscribe((res)=>{
+      sessionStorage.removeItem("UUID")
       this.router.navigateByUrl("/")
     },(err)=>{
       Swal.fire({

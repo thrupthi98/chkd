@@ -11,6 +11,7 @@ const saltHash = require("../helper/saltHash");
 const token = require("../helper/token");
 const { request } = require('express');
 const roles = require('../helper/roles').roles;
+const firebase = require('../helper/firebase');
 
 
 router.post("/", (req, res) => {
@@ -32,6 +33,7 @@ router.post("/", (req, res) => {
                 email: patMail,
                 contact: req.body.contact,
                 password: hashId,
+                uid: userId
             }).then(response => {
                 res.status(200).json({
                     message: "login successful",
@@ -86,14 +88,29 @@ router.post("/login", async(req, res) => {
                     })
                 })
             } else {
-                console.log("hello")
-                res.status(404).json({
-                    message: "Patient not found",
-                    status: 'NOT_FOUND'
+                res.status(500).json({
+                    message: "Problem during firebase authentication",
+                    status: "FAILURE"
                 })
             }
         }
     })
+})
+
+router.get('/getall', async(req, res) => {
+    var patientsData = await firebase.fetchUsers().catch(err => console.log(err))
+    if (patientsData.length != 0) {
+        res.status(200).json({
+            message: "Patients Data Fetched Successfully",
+            status: "SUCCESS",
+            data: patientsData
+        })
+    } else {
+        res.status(404).json({
+            message: "Patients Data not found",
+            status: 'NOT_FOUND'
+        })
+    }
 })
 
 router.get("/contact", (req, res) => {

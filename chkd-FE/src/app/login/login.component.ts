@@ -62,14 +62,26 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  prevStep(user){
+    if(user == 'admin'){
+      this.selectedIndex --;
+    }else{
+      this.selectedIndex -= 2;
+    }
+  }
+
   login(){
     if(this.loginForm.invalid){
       return false;
     }else{
       console.log(this.loginForm.value);
       this.loginService.loginAdmin(this.loginForm.value).subscribe((res)=>{
+<<<<<<< HEAD
         localStorage.setItem("UUID",res['UUID']);
         console.log(res);
+=======
+        sessionStorage.setItem("UUID",res['UUID']);
+>>>>>>> e0ecf151c912b6730cac711183c29119e7f45e60
         this.dialog.close({
           loggedIn: true,
           role: res['returnUrl']
@@ -98,7 +110,8 @@ export class LoginComponent implements OnInit {
       this.patientService.loginPatient({
         id: this.patientForm.controls.id.value
       }).subscribe((res)=>{
-        localStorage.setItem("UUID",res['UUID']);
+        localStorage.setItem("token",res['token'])
+        sessionStorage.setItem("UUID",res['UUID']);
         this.dialog.close({
           loggedIn: true,
           role: res['returnUrl']

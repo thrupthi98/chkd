@@ -22,7 +22,7 @@ export class LoginService{
         return this.http.put(this.baseUri, data,{
             headers: {
               "Content-Type": "application/json",
-              "X-auth-header": localStorage.getItem("UUID"),
+              "X-auth-header": sessionStorage.getItem("UUID"),
             },
         })
     }

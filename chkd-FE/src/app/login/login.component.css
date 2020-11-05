@@ -95,6 +95,13 @@ input::-webkit-inner-spin-button {
     box-shadow: none !important;
 }
 
+.back {
+    float: left !important;
+    margin-left: 25px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
 ::ng-deep .mat-tab-header {
     display: none !important;
 }

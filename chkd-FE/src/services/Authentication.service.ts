@@ -14,7 +14,7 @@ export class AuthService{
         return this.http.get(this.baseUri,{
             headers: {
                 "Content-Type": "application/json",
-                "X-auth-header": localStorage.getItem("UUID"),
+                "X-auth-header": sessionStorage.getItem("UUID"),
                 "URL": url
               },
         })
