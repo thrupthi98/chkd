@@ -12,6 +12,7 @@ const Token = require("../models/token")
 const generateId = require("../helper/generateId")
 
 router.post("/", (req, res) => {
+    console.log(req.body.date + " " + req.body.time);
     Surgery.create({
         id: nanoid(9),
         pt_id: req.body.pt_id,
@@ -88,9 +89,17 @@ router.get("/previous", (req, res) => {
         },
         {
             $match: {
-                status: {
-                    $eq: "Patient Discharged"
-                }
+                $or: [{
+                        dateTime: {
+                            $lt: new Date().getTime()
+                        }
+                    },
+                    {
+                        status: {
+                            $eq: "Patient Discharged"
+                        }
+                    }
+                ]
             }
         },
         {
@@ -207,6 +216,24 @@ router.put("/update/:id", (req, res) => {
         patientAge: req.body.patientAge,
         prescription: req.body.prescription,
         instructions: req.body.instructions,
+        status: req.body.status
+    }).then(result => {
+        console.log("Successfully updated the surgery");
+        res.status(200).json({
+            message: "Surgery Created successfully",
+            status: "SUCCESS"
+        })
+    }).catch(error => {
+        res.status(500).json({
+            message: "Problem occured while updating the surgery",
+            status: "FAILURE"
+        })
+    })
+})
+
+
+router.put("/statusUpdate/:id", (req, res) => {
+    Surgery.findOneAndUpdate({ id: req.params.id }, {
         status: req.body.status
     }).then(result => {
         console.log("Successfully updated the surgery");

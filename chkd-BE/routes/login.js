@@ -20,6 +20,9 @@ router.post('/', (req, res) => {
                 status: "BAD_REQUEST"
             })
         } else {
+            var fullName = result.fname + " " + result.lname ;
+            var DOB = result.dob.split('T')[0];
+            var phone = result.contact;
             var validateUser = await saltHash.validatePass(req.body.password, result.password)
             if (validateUser) {
                 var userID = token.createNewToken(result.id, result.role)
@@ -32,6 +35,9 @@ router.post('/', (req, res) => {
                         message: "login successful",
                         status: "SUCCESS",
                         UUID: response.hash,
+                        name : fullName,
+                        dob : DOB,
+                        contact : phone,
                         returnUrl: roles.filter(data => data.role == result.role)[0].url[0]
                     })
                 }).catch(error => {

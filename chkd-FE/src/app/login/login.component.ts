@@ -66,8 +66,10 @@ export class LoginComponent implements OnInit {
     if(this.loginForm.invalid){
       return false;
     }else{
+      console.log(this.loginForm.value);
       this.loginService.loginAdmin(this.loginForm.value).subscribe((res)=>{
         localStorage.setItem("UUID",res['UUID']);
+        console.log(res);
         this.dialog.close({
           loggedIn: true,
           role: res['returnUrl']

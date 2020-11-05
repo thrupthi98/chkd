@@ -183,6 +183,7 @@ export class DialogComponent implements OnInit {
           this.newUser = false;
           this.names = []
           this.patientDetails = res['data']
+          console.log(res);
           for(var data of this.patientDetails){
             this.names.push(data.fname + " " + data.lname)
           }
@@ -333,6 +334,7 @@ export class DialogComponent implements OnInit {
       return false;
     }else{
       this.invalidForm = false
+      console.log(this.data.id);
       this.surgeryService.updateSurgery(this.data.id, {
         type:this.surgeryForm.controls.type.value,
         date:this.surgeryForm.controls.date.value.toLocaleDateString('en-US'),

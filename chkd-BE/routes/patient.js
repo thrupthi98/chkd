@@ -9,6 +9,7 @@ const Token = require("../models/token")
 const generateId = require("../helper/generateId");
 const saltHash = require("../helper/saltHash");
 const token = require("../helper/token");
+const { request } = require('express');
 const roles = require('../helper/roles').roles;
 
 
@@ -57,7 +58,8 @@ router.post("/login", async(req, res) => {
                 status: 'NOT_FOUND'
             })
         } else {
-            var loggedIn = await saltHash.validatePass(req.body.id, result.password)
+            var loggedIn = await saltHash.validatePass(req.body.id, result.password);
+            console.log(result);
             if (loggedIn) {
                 var userID = token.createNewToken(result.id, "Patient")
                 var UUID = token.hashIt(userID)
@@ -69,6 +71,11 @@ router.post("/login", async(req, res) => {
                         message: "login successful",
                         status: "SUCCESS",
                         UUID: response.hash,
+                        name : result.fname + " " + result.lname,
+                        dob:result.dob,
+                        email:result.email,
+                        contact:result.contact,
+                        password: result.password,
                         returnUrl: roles.filter(data => data.role == "Patient")[0].url[0]
                     })
                 }).catch(error => {
