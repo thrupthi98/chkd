@@ -13,29 +13,29 @@ var firebaseConfig = {
 admin.initializeApp(firebaseConfig);
 const db = admin.firestore();
 
-function createUser(email, pass, data) {
-    return new Promise((resolve, reject) => {
-        admin.auth().createUserWithEmailAndPassword(email, pass.toString()).then(res => {
-            db.collection("users").doc(res.user.uid).set({
-                UT: "patient",
-                aboutMe: "",
-                chattingWith: null,
-                createdAt: new Date().getTime().toString(),
-                id: res.user.uid,
-                nickname: data.fname + " " + data.lname,
-                photoUrl: "https://i.stack.imgur.com/ZQT8Z.png",
-                pushToken: ""
-            }).then(result => {
-                resolve(res.user.uid);
-            }).catch(error => {
-                console.log(error);
-                reject(error);
-            })
-        }).catch(function(error) {
-            reject(error);
-        })
-    })
-}
+// function createUser(email, pass, data) {
+//     return new Promise((resolve, reject) => {
+//         admin.auth().createUserWithEmailAndPassword(email, pass.toString()).then(res => {
+//             db.collection("users").doc(res.user.uid).set({
+//                 UT: "patient",
+//                 aboutMe: "",
+//                 chattingWith: null,
+//                 createdAt: new Date().getTime().toString(),
+//                 id: res.user.uid,
+//                 nickname: data.fname + " " + data.lname,
+//                 photoUrl: "https://i.stack.imgur.com/ZQT8Z.png",
+//                 pushToken: ""
+//             }).then(result => {
+//                 resolve(res.user.uid);
+//             }).catch(error => {
+//                 console.log(error);
+//                 reject(error);
+//             })
+//         }).catch(function(error) {
+//             reject(error);
+//         })
+//     })
+// }
 
 function fetchUsers() {
     return new Promise(async(resolve, reject) => {
@@ -49,9 +49,9 @@ function fetchUsers() {
 
 }
 
-function storeMessage(message) {
+function storeMessage(id, message) {
     return new Promise(async(resolve, reject) => {
-        db.collection("messages").doc(message.toId).collection(message.toId).doc(new Date(message.dateSent).getTime().toString()).set({
+        db.collection("messages").doc(id).collection(id).doc(new Date(message.dateSent).getTime().toString()).set({
             type: message.type,
             idFrom: message.fromId,
             idTo: message.toId,
@@ -66,21 +66,20 @@ function storeMessage(message) {
     })
 }
 
-function signInUser(email, pass) {
-    return new Promise((resolve, reject) => {
-        admin.auth().signInWithEmailAndPassword(email, pass.toString()).then(res => {
-            resolve(res.user.uid)
-        }).catch(function(error) {
-            reject(error);
-        })
-    })
-}
+// function signInUser(email, pass) {
+//     return new Promise((resolve, reject) => {
+//         admin.auth().signInWithEmailAndPassword(email, pass.toString()).then(res => {
+//             resolve(res.user.uid)
+//         }).catch(function(error) {
+//             reject(error);
+//         })
+//     })
+// }
 
 function getMessages(uid) {
-    console.log(uid)
     return new Promise(async(resolve, reject) => {
         var patientsMessages = []
-        var messages = await db.collection('messages').doc(uid)
+        var messages = await db.collection('messages').doc(uid).collection(uid).get()
         messages.forEach(doc => {
             patientsMessages.push(doc.data());
         });
@@ -89,9 +88,7 @@ function getMessages(uid) {
 }
 
 module.exports = {
-    createUser: createUser,
     fetchUsers: fetchUsers,
     storeMessage: storeMessage,
     getMessages: getMessages,
-    signInUser: signInUser
 }

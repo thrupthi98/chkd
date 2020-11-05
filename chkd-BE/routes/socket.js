@@ -20,16 +20,38 @@ const updateStatus = (io, data) => {
 
 const sendMessage = async(io, data) => {
     let response;
-    var result = await firebase.storeMessage(data)
-    if (result) {
-        console.log("Successfully sent message");
-        response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
-        io.emit(data.toId, response);
-    } else {
-        res.status(500).json({
-            message: "There was some problem storing the messages",
-            status: "FAILURE"
+    if (data.toId != 999) {
+        Surgery.findOne({ id: data.toId }).then(async(surgery) => {
+            var result = await firebase.storeMessage(data.toId, data)
+            if (result) {
+                console.log("Successfully sent message");
+                response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
+                io.emit(surgery.pt_id, response);
+            } else {
+                res.status(500).json({
+                    message: "There was some problem storing the messages",
+                    status: "FAILURE"
+                })
+            }
+        }).catch(err => {
+            res.status(500).json({
+                message: "There was some problem storing the messages",
+                status: "FAILURE"
+            })
         })
+    } else {
+        data.toId = data.toId.toString();
+        var result = await firebase.storeMessage(data.fromId, data)
+        if (result) {
+            console.log("Successfully sent message");
+            response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
+            io.emit(999, response);
+        } else {
+            res.status(500).json({
+                message: "There was some problem storing the messages",
+                status: "FAILURE"
+            })
+        }
     }
 }
 

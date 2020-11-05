@@ -1,9 +1,10 @@
-import { ChatAdapter, IChatGroupAdapter, User, Group, Message, ChatParticipantStatus, ParticipantResponse, ParticipantMetadata, ChatParticipantType, IChatParticipant, IChatController } from 'ng-chat';
+import { ChatAdapter, IChatGroupAdapter, Group, Message, ChatParticipantStatus, ParticipantResponse, ParticipantMetadata, ChatParticipantType, IChatParticipant, IChatController } from 'ng-chat';
 import { Observable, of } from 'rxjs';
-import { delay } from "rxjs/operators";
+import { delay, first, map } from "rxjs/operators";
 import { MessagesService } from 'src/services/Messages.service';
 import {PatientService} from '../../services/Patient.service';
 import io from "socket.io-client";
+import { HttpClient } from '@angular/common/http';
 
 export class PatientMessageAdapter extends ChatAdapter implements IChatGroupAdapter {
   
@@ -24,47 +25,34 @@ export class PatientMessageAdapter extends ChatAdapter implements IChatGroupAdap
 
     constructor(
         private messagesService : MessagesService,
+        private surgery_id,
+        private http: HttpClient
     ){
         super();
         this.getMessages()
-        // this.getMessageHistory()
-    }
+      }
 
     getMessages(){
-        this.messagesService.getMessagesForPatient("rF44BBwNF").subscribe(async (res)=>{
-            console.log(res['messageHistory'])
-            res['messageHistory'].forEach(ele => {
-                this.mockedHistory.push({
-                    fromId: ele['fromId'],
-                    toId: ele['toId'],
-                    message: ele['content'],
-                    dateSent: ele['dateSent']
-                })
-            });
+      
+      // this.socket = io.connect(this.url);
 
-            await this.getMessageHistory();
-
-            this.socket = io.connect(this.url);
-
+      // this.socket.on(this.surgery_id, (data) => {
+      //   console.log(data)
+      //     let message = new Message();
+      //     message.fromId = data['data']['toId'];
+      //     message.toId = data['data']['fromId'];
+      //     message.message = data['data']['message'];
+      //     message.dateSent =  data['data']['dateSent'];
+      //     this.mockedHistory.push( {
+      //         fromId: data['data']['toId'],
+      //         toId: data['data']['fromId'],
+      //         message: data['data']['message'],
+      //         dateSent: data['data']['dateSent']
+      //       })
+      //       this.onMessageReceived(PatientMessageAdapter.mockedParticipants[0], message);
+      // });
     
-            this.socket.on("rF44BBwNF", (data) => {
-                let message = new Message();
-                message.fromId = data['data']['fromId'];
-                message.toId = data['data']['toId'];
-                message.message = data['data']['message'];
-                message.dateSent =  data['data']['dateSent'];
-                console.log(message)
-                this.mockedHistory.push( {
-                    fromId: data['data']['toId'],
-                    toId: data['data']['fromId'],
-                    message: data['data']['message'],
-                    dateSent: data['data']['dateSent']
-                  })
-                  this.onMessageReceived(PatientMessageAdapter.mockedParticipants[0], message);
-            });
-          },(err)=>{
-            console.log(err)
-          })
+          
     }
 
   listFriends(): Observable<ParticipantResponse[]> {
@@ -81,13 +69,30 @@ export class PatientMessageAdapter extends ChatAdapter implements IChatGroupAdap
   }
 
   getMessageHistory(): Observable<Message[]> {
-    return of(this.mockedHistory).pipe(delay(2000));
+    return this.http.get(`http://localhost:3000/messages`,{
+      headers: {
+        "Content-Type": "application/json",
+        "X-auth-header": this.surgery_id,
+      },
+  }).pipe(
+    map((data: any) => {
+      data["messageHistory"].forEach(element => {
+        let message = new Message();
+        message.fromId = element['idFrom'];
+        message.toId = element['idTo'];
+        message.message = element['content'];
+        message.dateSent =  new Date(parseInt(element['timestamp']));
+        this.mockedHistory.push(message)
+      });
+      return this.mockedHistory
+    })
+  )
   }
 
   async sendMessage(message: Message){
-    console.log(PatientMessageAdapter.mockedParticipants)
-    // this.socket = io(this.url);
-    // await this.messagesService.sendMessages(message,this.socket)
+    console.log(message)
+    this.socket = io(this.url);
+    await this.messagesService.sendMessages(message,this.socket)
 
     // setTimeout(() => {
     //   let replyMessage = new Message();

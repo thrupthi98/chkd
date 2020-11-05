@@ -7,6 +7,7 @@ import { ChatAdapter, ChatParticipantStatus, ChatParticipantType, IChatControlle
 import { PatientMessageAdapter } from '../adapter/patient-msg-adapter';
 import { MessagesService } from 'src/services/Messages.service';
 import { ViewChild } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-patient',
@@ -29,7 +30,7 @@ export class PatientComponent implements OnInit {
   private socket;
 
   public adapter: ChatAdapter;
-  userId = 999;
+  userId;
 
   patientDetails: any = [];
   patient;
@@ -44,15 +45,16 @@ export class PatientComponent implements OnInit {
   statusIcons = ['alarm_on','weekend','airline_seat_flat','accessible','check_circle'];
   currentStatus: any = [];
   surgeryIds: any = [];
+  messageNumbers: any = [];
 
   constructor(
     private surgeryService: SurgeryService,
     private router: Router,
-    private messageService: MessagesService
+    private messageService: MessagesService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
-    this.adapter = new PatientMessageAdapter(this.messageService);
 
     this.socket = io.connect(this.url);
 
@@ -62,12 +64,21 @@ export class PatientComponent implements OnInit {
       for(var data of this.patientDetails){
         this.currentStatus.push(this.statusNames.indexOf(data.status))
         this.surgeryIds.push(data.id)
+        this.messageNumbers.push(0)
       }
 
       this.patient = res['name']
 
+
       this.socket.on(this.patientDetails[0].pt_id, (data) => {
         this.currentStatus[this.surgeryIds.indexOf(data['data']['id'])] = this.statusNames.indexOf(data['data']['status'])
+      });
+
+      this.socket.on(this.patientDetails[0].pt_id, (data) => {
+        if(this.ngChatInstance !== undefined){
+          this.ngChatInstance.triggerCloseChatWindow(data['data']['toId'])
+        }
+        this.messageNumbers[this.surgeryIds.indexOf(data['data']['toId'])]++
       });
 
       this.patientDetails.forEach(item => {
@@ -96,8 +107,6 @@ export class PatientComponent implements OnInit {
           this.currentStatus.push(this.statusNames.indexOf(data.status))
           this.surgeryIds.push(data.id)
         }
-
-        console.log(res['name'])
   
         this.patient = res['name']
   
@@ -139,16 +148,25 @@ export class PatientComponent implements OnInit {
     this.selectedIndex ++;
   }
 
-  openChat(id,type){
+  async openChat(id,type){
+    this.userId = id;
+    this.messageNumbers[this.surgeryIds.indexOf(id)] = 0
     let user = {
       participantType: ChatParticipantType.User,
-      id: id,
+      id: 999,
       displayName: type,
       avatar: "",
       status: ChatParticipantStatus.Online
       };
-      this.ngChatInstance.triggerOpenChatWindow(user);
+      this.adapter = await new PatientMessageAdapter(this.messageService, id, this.http);
+      setTimeout(()=>{
+        this.ngChatInstance.triggerOpenChatWindow(user);
+      },500)
   }
+
+  // check(){
+  //   this.adapter = new PatientMessageAdapter(this.messageService, "abc");
+  // }
 
 }
 

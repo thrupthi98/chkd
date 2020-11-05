@@ -10,16 +10,8 @@ export class MessagesService{
 
     constructor(private http: HttpClient) {}
 
-    getMessagesForPatient(id){
-        return this.http.get(`${this.baseUri}`,{
-            headers: {
-              "Content-Type": "application/json",
-              "X-auth-header": id,
-            },
-        })
-    }
-
     sendMessages(data:any,socket:any):void{
         socket.emit('sendMessage', data);
     }
+
 }

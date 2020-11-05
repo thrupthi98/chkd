@@ -24,31 +24,28 @@ router.post("/", (req, res) => {
             var patId = await generateId.createId();
             var patMail = await generateId.createMail(patId);
             var hashId = await saltHash.genSalt(patId.toString())
-            var userId = await firebase.createUser(patMail, patId, req.body).catch(err => console.log(err))
-            if (userId != undefined || userId != null) {
-                Patient.create({
-                    id: nanoid(9),
-                    fname: req.body.fname,
-                    lname: req.body.lname,
-                    dob: req.body.dob,
-                    email: patMail,
-                    contact: req.body.contact,
-                    password: hashId,
-                    uid: userId
-                }).then(response => {
-                    res.status(200).json({
-                        message: "login successful",
-                        status: "SUCCESS",
-                        id: response.id,
-                    })
-                }).catch(err => {
-                    console.log(err)
-                    res.status(500).json({
-                        message: "Problem while creating the patient",
-                        status: 'FAILURE'
-                    })
+            Patient.create({
+                id: nanoid(9),
+                fname: req.body.fname,
+                lname: req.body.lname,
+                dob: req.body.dob,
+                email: patMail,
+                contact: req.body.contact,
+                password: hashId,
+                uid: userId
+            }).then(response => {
+                res.status(200).json({
+                    message: "login successful",
+                    status: "SUCCESS",
+                    id: response.id,
                 })
-            }
+            }).catch(err => {
+                console.log(err)
+                res.status(500).json({
+                    message: "Problem while creating the patient",
+                    status: 'FAILURE'
+                })
+            })
         }
     })
 })
@@ -64,40 +61,29 @@ router.post("/login", async(req, res) => {
         } else {
             var loggedIn = await saltHash.validatePass(req.body.id, result.password)
             if (loggedIn) {
-                var signIn = await firebase.signInUser(result.email, req.body.id).catch(err => console.log(err))
-                if (signIn != undefined || signIn != null) {
-                    console.log(signIn)
-                    var userID = token.createNewToken(result.id, "Patient")
-                    var UUID = token.hashIt(userID)
-                    Token.create({
-                        token: userID,
-                        hash: UUID,
-                    }).then(response => {
-                        res.status(200).json({
-                            message: "login successful",
-                            status: "SUCCESS",
-                            UUID: response.hash,
-                            token: signIn,
-                            returnUrl: roles.filter(data => data.role == "Patient")[0].url[0]
-                        })
-                    }).catch(error => {
-                        console.log(error);
-                        res.status(500).json({
-                            message: "Problem creating token",
-                            status: "FAILURE"
-                        })
+                var userID = token.createNewToken(result.id, "Patient")
+                var UUID = token.hashIt(userID)
+                Token.create({
+                    token: userID,
+                    hash: UUID,
+                }).then(response => {
+                    res.status(200).json({
+                        message: "login successful",
+                        status: "SUCCESS",
+                        UUID: response.hash,
+                        returnUrl: roles.filter(data => data.role == "Patient")[0].url[0]
                     })
-                } else {
+                }).catch(error => {
+                    console.log(error);
                     res.status(500).json({
-                        message: "Problem during firebase authentication",
+                        message: "Problem creating token",
                         status: "FAILURE"
                     })
-                }
+                })
             } else {
-                console.log("hello")
-                res.status(404).json({
-                    message: "Patient not found",
-                    status: 'NOT_FOUND'
+                res.status(500).json({
+                    message: "Problem during firebase authentication",
+                    status: "FAILURE"
                 })
             }
         }

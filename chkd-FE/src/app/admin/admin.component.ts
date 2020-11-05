@@ -19,6 +19,9 @@ import { ChatAdapter, ChatParticipantStatus, ChatParticipantType, IChatControlle
 import { MessageAdapter } from '../adapter/message-adapter';
 import { PatientService } from 'src/services/Patient.service';
 import { MessagesService } from 'src/services/Messages.service';
+import io from "socket.io-client";
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-admin',
@@ -81,6 +84,9 @@ export class AdminComponent implements OnInit {
   filteredSurgeonkywds: Observable<string[]>;
   filteredVenuekywds: Observable<string[]>;
 
+  private Soketurl = 'http://localhost:3000';
+  private socket;
+
   constructor(
     public dialog: MatDialog,
     private surgeryService: SurgeryService,
@@ -91,11 +97,13 @@ export class AdminComponent implements OnInit {
     private router: Router,
     private authenticationService: AuthService,
     private patientService: PatientService,
-    private messagesService: MessagesService
+    private messagesService: MessagesService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
-    this.adapter = new MessageAdapter(this.patientService, this.messagesService);
+    this.socket = io.connect(this.Soketurl);
+
     let url = this.router.url;
 
   this.authenticationService.checkAccess(url).subscribe((res)=>{
@@ -137,9 +145,21 @@ export class AdminComponent implements OnInit {
       });
       this.newList = this.surgeryList
       this.sortedList = this.newList.slice();
+      this.sortedList.forEach(element => {
+        element['messages'] = 0;
+      });
     }, (err)=>{
       console.log("error")
     })
+
+    this.socket.on(999, (data) => {
+      this.ngChatInstance.triggerCloseChatWindow(data['data']['fromId'])
+      this.sortedList.forEach(element => {
+        if(element.id == data['data']['fromId']){
+          element['messages']++;
+        }
+      });
+    });
 
   }, (err)=>{
     if(err.error != undefined && err.error.status == "UN_AUTHORISED"){
@@ -251,7 +271,10 @@ export class AdminComponent implements OnInit {
       || option.venue.toLowerCase().includes(filterValue.toLowerCase())
       || option.date.toLowerCase().includes(filterValue.toLowerCase())
       || option.time.toLowerCase().includes(filterValue.toLowerCase())
-      || option.patient.toLowerCase().includes(filterValue.toLowerCase())
+      || option.patientDetails[0].fname.toLowerCase().includes(filterValue.toLowerCase())
+      || option.patientDetails[0].lname.toLowerCase().includes(filterValue.toLowerCase())
+      || option.patientDetails[0].contact.toLowerCase().includes(filterValue.toLowerCase())
+      || option.patientDetails[0].dob.toLowerCase().includes(filterValue.toLowerCase())
       )
     )
     this.sortedList = this.newList;
@@ -350,6 +373,11 @@ export class AdminComponent implements OnInit {
   }
 
   openChatWindow(id,surgery,patientFname, patientLname){
+    this.sortedList.forEach(element => {
+      if(element.id == id){
+        element['messages']= 0;
+      }
+    });
     let user = {
       participantType: ChatParticipantType.User,
       id: id,
@@ -357,8 +385,9 @@ export class AdminComponent implements OnInit {
       avatar: "https://i.stack.imgur.com/ZQT8Z.png",
       status: ChatParticipantStatus.Online
       };
-      console.log('openChat clicked');
-      this.ngChatInstance.triggerOpenChatWindow(user);
+    this.adapter = new MessageAdapter(this.patientService, this.messagesService, this.http, id);
+    setTimeout(()=>this.ngChatInstance.triggerOpenChatWindow(user), 500);
+      
   }
 
 }

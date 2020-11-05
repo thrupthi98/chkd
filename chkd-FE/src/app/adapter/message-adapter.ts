@@ -1,18 +1,23 @@
 import { ChatAdapter, IChatGroupAdapter, User, Group, Message, ChatParticipantStatus, ParticipantResponse, ParticipantMetadata, ChatParticipantType, IChatParticipant } from 'ng-chat';
 import { Observable, of } from 'rxjs';
-import { delay } from "rxjs/operators";
+import { delay, map } from "rxjs/operators";
 import { MessagesService } from 'src/services/Messages.service';
 import {PatientService} from '../../services/Patient.service';
 import io from "socket.io-client";
+import { HttpClient } from '@angular/common/http';
 
 export class MessageAdapter extends ChatAdapter implements IChatGroupAdapter {
   public static mockedParticipants: IChatParticipant[] = [];
+  public mockedHistory: Array<Message> = [];
+
   private url = 'http://localhost:3000';
   private socket;
 
     constructor(
         private patientService : PatientService,
         private messagesService : MessagesService,
+        private http: HttpClient,
+        private chatId
     ){
         super();
         this.getPatients()
@@ -49,20 +54,24 @@ export class MessageAdapter extends ChatAdapter implements IChatGroupAdapter {
   }
 
   getMessageHistory(destinataryId: any): Observable<Message[]> {
-    let mockedHistory: Array<Message>;
-
-    mockedHistory = [
-      // {
-      //   fromId: 1,
-      //   toId: 999,
-      //   message: "Hi there, just type any message bellow to test this Angular module.",
-      //   dateSent: new Date()
-      // }
-    ];
-
-    console.log(mockedHistory)
-
-    return of(mockedHistory).pipe(delay(2000));
+    return this.http.get(`http://localhost:3000/messages`,{
+      headers: {
+        "Content-Type": "application/json",
+        "X-auth-header": this.chatId,
+      },
+  }).pipe(
+    map((data: any) => {
+      data["messageHistory"].forEach(element => {
+        let message = new Message();
+        message.fromId = element['idFrom'];
+        message.toId = element['idTo'];
+        message.message = element['content'];
+        message.dateSent =  new Date(parseInt(element['timestamp']));
+        this.mockedHistory.push(message)
+      });
+      return this.mockedHistory
+    })
+  )
   }
 
   async sendMessage(message: Message){

@@ -24,6 +24,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import {MatBadgeModule} from '@angular/material/badge';
 
 import { CarouselModule, WavesModule } from 'angular-bootstrap-md';
 import { TextMaskModule } from 'angular2-text-mask';
@@ -97,6 +98,7 @@ import { PatientComponent } from './patient/patient.component';
     MatPaginatorModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatBadgeModule,
     CarouselModule,
     WavesModule,
     TextMaskModule,

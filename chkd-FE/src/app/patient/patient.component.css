@@ -175,11 +175,11 @@ tr.example-element-row:not(.example-expanded-row):hover {
     cursor: pointer;
 }
 
-
-/* 
-::ng-deep #ng-chat-people {
-    display: none !important;
-} */
+.message {
+    float: right !important;
+    color: rgb(125, 175, 50);
+    font-size: 30px;
+}
 
 ::ng-deep .ng-chat-window {
     position: relative !important;
