@@ -15,7 +15,8 @@ const auth = require("./routes/auth");
 const surgeon = require("./routes/surgeon");
 const patient = require("./routes/patient");
 const messages = require("./routes/messages");
-const socketRoute = require("./routes/socket")
+const socketRoute = require("./routes/socket");
+const analytics = require("./routes/analytics");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -55,6 +56,7 @@ app.use("/auth", auth)
 app.use("/surgeon", surgeon)
 app.use("/patient", patient)
 app.use("/messages", messages)
+app.use("/analytics", analytics)
 
 app.get('/haha', (req, res) => {
     firebase.fetchUsers()

@@ -4,32 +4,45 @@ const { nanoid } = require('nanoid');
 
 const Surgery = require("../models/surgery")
 const firebase = require('../helper/firebase');
-
+const { response } = require('express');
 
 const updateStatus = (io, data) => {
     let result;
-<<<<<<< HEAD
-    // Todo.findOneAndUpdate({ _id:T.id }, T, { new:true }, (err,todo) => {
-    //   if(err){
-    //   result = {'success':false,'message':'Some Error','error':err};
-    //   console.log(result);
-    //   }
-    //   else{
-    //    result = {'success':true,'message':'Todo Updated Successfully',todo};
-    //    io.emit('TodoUpdated', result);
-    //   }
-    // })
-    console.log(data);
-=======
->>>>>>> e0ecf151c912b6730cac711183c29119e7f45e60
-    Surgery.findOneAndUpdate({ id: data.id }, data).then(response => {
-        console.log("Successfully updated the status");
-        result = { 'success': true, 'message': 'Successfully updated the status', 'data': data };
-        io.emit(response.pt_id, result);
+    var time ;
+    Surgery.findOne({id: data.id},{updatedAt :1}).then(response =>{
+        console.log(new Date(response.updatedAt).toLocaleString())
+        switch (data.status){
+            case "Patient Checked in":
+                data.checkin = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                break;
+            case "Patient In Surgery":
+                data.inSurgery = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                break;
+            case "Post Surgery":
+                data.postSurgery = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                break;
+            case "Patient Discharged":
+                data.discharged = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                break;
+            default:
+                console.log("Wrong status");
+        }
+        console.log(data);
+        Surgery.findOneAndUpdate({ id: data.id }, data).then(response => {
+            console.log("Successfully updated the status");
+            result = { 'success': true, 'message': 'Successfully updated the status', 'data': data };
+            io.emit(response.pt_id, result);
+        }).catch(error => {
+            result = { 'success': false, 'message': 'Some Error', 'error': error };
+            console.log(error);
+        })
+
     }).catch(error => {
         result = { 'success': false, 'message': 'Some Error', 'error': error };
         console.log(error);
-    })
+    });
+    
+    
 }
 
 const sendMessage = async(io, data) => {

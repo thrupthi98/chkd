@@ -34,6 +34,22 @@ const SurgerySchema = new mongoose.Schema({
     status: {
         type: String,
         required: true
+    },
+    checkin:{
+        tyep: Number,
+        default : 0,
+    },
+    inSurgery:{
+        tyep: Number,
+        default : 0,
+    },
+    postSurgery:{
+        tyep: Number,
+        default : 0,
+    },
+    discharged:{
+        tyep: Number,
+        default : 0,
     }
 }, {
     timestamps: true
