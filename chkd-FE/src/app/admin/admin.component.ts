@@ -311,23 +311,62 @@ export class AdminComponent implements OnInit {
 
   openDialog(name,id){
     if(name == 'edit'){
-      this.dialog.open(DialogComponent, {
+      let edit = this.dialog.open(DialogComponent, {
         data: {name:'edit', id:id, venueList:this.venuList, surgeonList: this.surgeonList, typeList: this.typeList},
         disableClose: true,
         panelClass: "custom-dialog"
       });
+      edit.afterClosed().subscribe((result)=>{
+        if(result!= undefined)
+        this.sortedList.forEach(ele=>{
+          if(ele.id == result.response.id){
+            ele.type = result.response.type,
+            ele.surgeon = result.response.surgeon,
+            ele.date = result.response.date,
+            ele.time = result.response.time,
+            ele.venue = result.response.venue,
+            ele.prescription = result.response.prescription,
+            ele.instructions = result.response.instructions
+          }
+        })
+      })
     }else if(name == 'create'){
-    this.dialog.open(DialogComponent, {
+    let create = this.dialog.open(DialogComponent, {
       data: {name:'create', id:'all', venueList:this.venuList, surgeonList: this.surgeonList, typeList: this.typeList},
       disableClose: true,
       panelClass: "custom-dialog"
     });
+    create.afterClosed().subscribe((result)=>{
+      this.surgeryService.getUpcomingSurgery().subscribe((res)=>{
+        this.surgeryList = res['data']
+        this.surgeryList.forEach(item => {
+          item.date = new Date(item.dateTime).toLocaleDateString("en-US")
+          item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
+        });
+        this.newList = this.surgeryList
+        this.sortedList = this.newList.slice();
+        this.sortedList.forEach(element => {
+          element['messages'] = 0;
+        });
+      }, (err)=>{
+        console.log("error")
+      })
+    })
     }else if(name == 'status'){
-      this.dialog.open(DialogComponent, {
+      let statusDialog = this.dialog.open(DialogComponent, {
         data: {name:'status', id:id},
         disableClose: true,
         panelClass: "custom-dialog"
       });
+      statusDialog.afterClosed().subscribe((result)=>{
+        if(result != undefined){
+          this.sortedList.forEach(ele=>{
+            if(ele.id == result.response.id){
+              ele.status = result.response.status
+            }
+          })
+        }
+      })
     }
   }
 

@@ -74,7 +74,6 @@ export class LoginComponent implements OnInit {
     if(this.loginForm.invalid){
       return false;
     }else{
-      console.log(this.loginForm.value);
       this.loginService.loginAdmin(this.loginForm.value).subscribe((res)=>{
         sessionStorage.setItem("UUID",res['UUID']);
         this.dialog.close({

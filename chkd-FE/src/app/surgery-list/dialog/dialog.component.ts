@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SurgeryService } from 'src/services/Surgery.service';
-import {MatDialog, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { Inject } from '@angular/core';
 import { map, startWith } from "rxjs/operators";
 import Swal from 'sweetalert2';
@@ -68,7 +68,7 @@ export class DialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private fb: FormBuilder,
     private surgeryService: SurgeryService,
-    private dialog: MatDialog,
+    private dialog: MatDialogRef<DialogComponent>,
     private patientService: PatientService,
   ) { }
 
@@ -276,7 +276,7 @@ export class DialogComponent implements OnInit {
             text: "Surgery created successfully",
             icon: "success"
           }).then(result =>{
-            location.reload()
+            this.dialog.close()
           })
         },(err)=>{
           Swal.fire({
@@ -306,7 +306,7 @@ export class DialogComponent implements OnInit {
               text: "Surgery created successfully",
               icon: "success"
             }).then(result =>{
-              location.reload()
+            this.dialog.close()
             })
           },(err)=>{
             Swal.fire({
@@ -334,7 +334,6 @@ export class DialogComponent implements OnInit {
       return false;
     }else{
       this.invalidForm = false
-      console.log(this.data.id);
       this.surgeryService.updateSurgery(this.data.id, {
         type:this.surgeryForm.controls.type.value,
         date:this.surgeryForm.controls.date.value.toLocaleDateString('en-US'),
@@ -349,7 +348,19 @@ export class DialogComponent implements OnInit {
           text: "Surgery updated successfully",
           icon: "success"
         }).then(result =>{
-          location.reload()
+          this.dialog.close({
+            response: {
+              id:this.data.id,
+              type:this.surgeryForm.controls.type.value,
+              date:this.surgeryForm.controls.date.value.toLocaleDateString('en-US'),
+              time:this.surgeryForm.controls.time.value.toLocaleTimeString('en-US'),
+              surgeon:this.surgeryForm.controls.surgeon.value,
+              venue:this.surgeryForm.controls.venue.value,
+              prescription:this.surgeryForm.controls.prescription.value,
+              instructions:this.surgeryForm.controls.instructions.value,
+              status: this.receivedData.status
+            } 
+          })
         })
       },(err)=>{
         Swal.fire({
@@ -388,7 +399,12 @@ export class DialogComponent implements OnInit {
         text: "Status changed successfully",
         icon: "success"
       }).then(result =>{
-        location.reload()
+        this.dialog.close({
+          response:{
+            id: this.data.id,
+            status: this.selectedSatus
+          }
+        })
       })
   }else{
     this.showAlert = false;
@@ -398,7 +414,7 @@ export class DialogComponent implements OnInit {
   }
 
   closeDialog(){
-    this.dialog.closeAll();
+    this.dialog.close();
     this.showAlert = false;
   }
 

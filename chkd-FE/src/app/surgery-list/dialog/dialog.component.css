@@ -187,3 +187,8 @@ small {
 ::ng-deep .mat-form-field-appearance-outline .mat-form-field-subscript-wrapper {
     padding: 0 !important;
 }
+
+::ng-deep .mat-datepicker-content-touch .mat-calendar {
+    width: 0 !important;
+    height: 0 !important;
+}

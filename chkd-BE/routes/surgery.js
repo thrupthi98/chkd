@@ -12,20 +12,6 @@ const Token = require("../models/token")
 const generateId = require("../helper/generateId");
 const Patient = require('../models/patient');
 
-router.get("/for",(req,res) => {
-    Surgery.find().then(response => {
-        response.forEach(element => {
-            var ran = Math.random()*1000;
-            Surgery.findOneAndUpdate({id:element.id},{checkin:ran,inSurgery:ran,postSurgery:ran,discharged:ran}).then(resp =>{
-                console.log(resp.id);
-            })
-        });
-        res.status(200).json({
-            message: "Surgery Created successfully",
-            status: "SUCCESS"
-        })
-    })
-})
 router.post("/", (req, res) => {
     console.log(req.body.date + " " + req.body.time);
     Surgery.create({
@@ -37,7 +23,11 @@ router.post("/", (req, res) => {
         surgeon: req.body.surgeon,
         prescription: req.body.prescription,
         instructions: req.body.instructions,
-        status: req.body.status
+        status: req.body.status,
+        checkin: 0,
+        inSurgery: 0,
+        postSurgery: 0,
+        discharged: 0
     }).then(result => {
         console.log("Successfully created the surgery");
         res.status(200).json({

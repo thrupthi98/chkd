@@ -10,7 +10,7 @@
     margin-top: 5px;
 }
 
-::ng-deep .mat-dialog-container {
+::ng-deep .login-wrap .mat-dialog-container {
     padding: 0 !important;
 }
 

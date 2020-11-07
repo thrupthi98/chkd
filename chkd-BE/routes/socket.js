@@ -8,26 +8,25 @@ const { response } = require('express');
 
 const updateStatus = (io, data) => {
     let result;
-    var time ;
-    Surgery.findOne({id: data.id},{updatedAt :1}).then(response =>{
+    var time;
+    Surgery.findOne({ id: data.id }, { updatedAt: 1 }).then(response => {
         console.log(new Date(response.updatedAt).toLocaleString())
-        switch (data.status){
+        switch (data.status) {
             case "Patient Checked in":
-                data.checkin = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                data.checkin = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime()) / 60000).toFixed(2));
                 break;
             case "Patient In Surgery":
-                data.inSurgery = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                data.inSurgery = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime()) / 60000).toFixed(2));
                 break;
             case "Post Surgery":
-                data.postSurgery = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                data.postSurgery = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime()) / 60000).toFixed(2));
                 break;
             case "Patient Discharged":
-                data.discharged = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                data.discharged = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime()) / 60000).toFixed(2));
                 break;
             default:
                 console.log("Wrong status");
         }
-        console.log(data);
         Surgery.findOneAndUpdate({ id: data.id }, data).then(response => {
             console.log("Successfully updated the status");
             result = { 'success': true, 'message': 'Successfully updated the status', 'data': data };
@@ -41,8 +40,8 @@ const updateStatus = (io, data) => {
         result = { 'success': false, 'message': 'Some Error', 'error': error };
         console.log(error);
     });
-    
-    
+
+
 }
 
 const sendMessage = async(io, data) => {

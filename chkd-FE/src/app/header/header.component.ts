@@ -82,7 +82,8 @@ export class HeaderComponent implements OnInit{
 
     openLogin(){
       let dialogRef = this.dialog.open(LoginComponent, {
-        disableClose: true
+        disableClose: true,
+        panelClass: 'login-wrap'
       });
       
       dialogRef.afterClosed().subscribe((result) => {

@@ -1,13 +1,14 @@
 const admin = require('firebase');
 
-var firebaseConfig = {
-    apiKey: "AIzaSyBof-xhNDwJqY4hEfs0iE9fMWFc0f9MNRQ",
-    authDomain: "complaintform-aea71.firebaseapp.com",
-    databaseURL: "https://complaintform-aea71.firebaseio.com",
-    projectId: "complaintform-aea71",
-    storageBucket: "complaintform-aea71.appspot.com",
-    messagingSenderId: "936948767610",
-    appId: "1:936948767610:web:31316815fcf527605d54c3"
+const firebaseConfig = {
+    apiKey: "AIzaSyBq1zOZCP7CAsuxhoQcEhyBVle1fTY3SHc",
+    authDomain: "chkdsurgery-34cc1.firebaseapp.com",
+    databaseURL: "https://chkdsurgery-34cc1.firebaseio.com",
+    projectId: "chkdsurgery-34cc1",
+    storageBucket: "chkdsurgery-34cc1.appspot.com",
+    messagingSenderId: "712412435401",
+    appId: "1:712412435401:web:55fe959acc77af04368e18",
+    measurementId: "G-P85N62C5RK"
 };
 
 admin.initializeApp(firebaseConfig);

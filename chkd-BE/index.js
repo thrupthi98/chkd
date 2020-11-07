@@ -58,12 +58,6 @@ app.use("/patient", patient)
 app.use("/messages", messages)
 app.use("/analytics", analytics)
 
-app.get('/haha', (req, res) => {
-    firebase.fetchUsers()
-    res.status(200).json({
-        me: "Hello"
-    })
-})
 
 
 http.listen(port, () => console.log("app running at - " + port))
