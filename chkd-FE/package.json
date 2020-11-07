@@ -1,6 +1,6 @@
 {
     "name": "chkd-fe",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "scripts": {
         "ng": "ng",
         "start": "ng serve",
@@ -25,9 +25,11 @@
         "@mat-datetimepicker/moment": "^5.1.0",
         "angular-bootstrap-md": "^10.0.0",
         "angular2-text-mask": "^9.0.0",
+        "apexcharts": "^3.22.1",
         "bootstrap": "^4.5.2",
         "mat-timepicker": "^5.0.1",
         "mdbootstrap": "^4.19.1",
+        "ng-apexcharts": "^1.5.5",
         "ng-chat": "^3.0.3",
         "ng-material-datetimepicker": "^1.19.6",
         "rxjs": "~6.5.4",

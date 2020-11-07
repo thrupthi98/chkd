@@ -7,5 +7,6 @@ export const Config = {
     access: "http://localhost:3000/auth",
     surgeon: "http://localhost:3000/surgeon",
     patient:  "http://localhost:3000/patient",
-    messages: "http://localhost:3000/messages"
+    messages: "http://localhost:3000/messages",
+    analytics: "http://localhost:3000/analytics"
 }

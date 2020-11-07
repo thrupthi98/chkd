@@ -29,6 +29,7 @@
                     <button routerLink="/surgeon" class="items" mat-menu-item>Add Surgeons</button>
                 </mat-menu>
                 <a routerLink="/surgery" id="contact" (click)="activate('contact')" *ngIf="role == 'admin'">Add Surgery Type</a>
+                <a routerLink="/analytics" id="analytics" (click)="activate('analytics')" *ngIf="role == 'admin'">Analytics</a>
                 <a [matMenuTriggerFor]="settings" id="content" *ngIf="role == 'admin' || role == 'pre-op' || role=='patient'">Settings</a>
                 <mat-menu #settings="matMenu">
                     <button class="items" mat-menu-item (click)="logout()">Logout</button>

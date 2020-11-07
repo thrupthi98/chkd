@@ -1,0 +1,20 @@
+.analytics-wrap {
+    padding: 70px;
+}
+
+.btn {
+    margin: 10px;
+    color: white;
+}
+
+.btn:focus,
+.btn:hover,
+.btn-active {
+    outline: none;
+    box-shadow: none;
+}
+
+.mat-form-field {
+    float: right !important;
+    margin-top: 5px;
+}

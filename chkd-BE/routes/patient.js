@@ -32,8 +32,7 @@ router.post("/", (req, res) => {
                 dob: req.body.dob,
                 email: patMail,
                 contact: req.body.contact,
-                password: hashId,
-                uid: userId
+                password: hashId
             }).then(response => {
                 res.status(200).json({
                     message: "login successful",
@@ -73,10 +72,10 @@ router.post("/login", async(req, res) => {
                         message: "login successful",
                         status: "SUCCESS",
                         UUID: response.hash,
-                        name : result.fname + " " + result.lname,
-                        dob:result.dob,
-                        email:result.email,
-                        contact:result.contact,
+                        name: result.fname + " " + result.lname,
+                        dob: result.dob,
+                        email: result.email,
+                        contact: result.contact,
                         password: result.password,
                         returnUrl: roles.filter(data => data.role == "Patient")[0].url[0]
                     })

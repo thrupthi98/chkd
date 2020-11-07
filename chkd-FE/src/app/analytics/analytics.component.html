@@ -1,0 +1,16 @@
+<div class="analytics-wrap">
+    <button class="btn" style="background-color: rgb(0, 0, 148);">Average Time</button>
+    <button class=btn style="background-color: rgb(128, 2, 2)">Max Time</button>
+    <button class="btn" style="background-color: rgb(1, 78, 1)">Min Time</button>
+    <mat-form-field class="col-lg-3" appearance="outline">
+        <mat-label>Select Surgery Type</mat-label>
+        <input matInput [matAutocomplete]="auto" [formControl]="surgery" />
+        <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let option of filteredSurgerykywds | async" [value]="option" (click)="getGraph(option)">
+                {{ option }}
+            </mat-option>
+        </mat-autocomplete>
+    </mat-form-field>
+    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis" [stroke]="chartOptions.stroke" [colors]="chartOptions.colors" [dataLabels]="chartOptions.dataLabels" [legend]="chartOptions.legend" [markers]="chartOptions.markers"
+        [grid]="chartOptions.grid" [yaxis]="chartOptions.yaxis" [title]="chartOptions.title"></apx-chart>
+</div>

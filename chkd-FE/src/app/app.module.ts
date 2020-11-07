@@ -29,6 +29,7 @@ import {MatBadgeModule} from '@angular/material/badge';
 import { CarouselModule, WavesModule } from 'angular-bootstrap-md';
 import { TextMaskModule } from 'angular2-text-mask';
 import { NgChatModule } from 'ng-chat';
+import {NgApexchartsModule} from 'ng-apexcharts';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -50,6 +51,7 @@ import { ResetPassComponent } from './reset-pass/reset-pass.component';
 import { HeaderComponent } from './header/header.component';
 import { HomeComponent } from './home/home.component';
 import { PatientComponent } from './patient/patient.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
 
 
 @NgModule({
@@ -67,6 +69,7 @@ import { PatientComponent } from './patient/patient.component';
     HeaderComponent,
     HomeComponent,
     PatientComponent,
+    AnalyticsComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,7 +105,8 @@ import { PatientComponent } from './patient/patient.component';
     CarouselModule,
     WavesModule,
     TextMaskModule,
-    NgChatModule
+    NgChatModule,
+    NgApexchartsModule,
   ],
   providers: [
     MatDatepickerModule,
