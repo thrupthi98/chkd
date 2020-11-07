@@ -256,20 +256,107 @@ router.put("/update/:id", (req, res) => {
 
 
 router.put("/statusUpdate/:id", (req, res) => {
-    Surgery.findOneAndUpdate({ id: req.params.id }, {
-        status: req.body.status
-    }).then(result => {
-        console.log("Successfully updated the surgery");
-        res.status(200).json({
-            message: "Surgery Created successfully",
-            status: "SUCCESS"
-        })
+    let result;
+    var time ;
+    Surgery.findOne({id: req.params.id},{updatedAt :1}).then(response =>{
+        console.log(new Date(response.updatedAt).toLocaleString())
+        switch (req.body.status){
+            case "Patient Checked in":
+                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                Surgery.findOneAndUpdate({ id: req.params.id }, {
+                    status: req.body.status,
+                    checkin: time
+                }).then(result => {
+                    console.log("Successfully updated the surgery");
+                    res.status(200).json({
+                        message: "Surgery Created successfully",
+                        status: "SUCCESS"
+                    })
+                }).catch(error => {
+                    res.status(500).json({
+                        message: "Problem occured while updating the surgery",
+                        status: "FAILURE"
+                    })
+                })
+                break;
+            case "Patient In Surgery":
+                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                Surgery.findOneAndUpdate({ id: req.params.id }, {
+                    status: req.body.status,
+                    inSurgery: time
+                }).then(result => {
+                    console.log("Successfully updated the surgery");
+                    res.status(200).json({
+                        message: "Surgery Created successfully",
+                        status: "SUCCESS"
+                    })
+                }).catch(error => {
+                    res.status(500).json({
+                        message: "Problem occured while updating the surgery",
+                        status: "FAILURE"
+                    })
+                })
+                break;
+            case "Post Surgery":
+                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                Surgery.findOneAndUpdate({ id: req.params.id }, {
+                    status: req.body.status,
+                    postSurgery: time
+                }).then(result => {
+                    console.log("Successfully updated the surgery");
+                    res.status(200).json({
+                        message: "Surgery Created successfully",
+                        status: "SUCCESS"
+                    })
+                }).catch(error => {
+                    res.status(500).json({
+                        message: "Problem occured while updating the surgery",
+                        status: "FAILURE"
+                    })
+                })
+                break;
+            case "Patient Discharged":
+                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                Surgery.findOneAndUpdate({ id: req.params.id }, {
+                    status: req.body.status,
+                    discharged: time
+                }).then(result => {
+                    console.log("Successfully updated the surgery");
+                    res.status(200).json({
+                        message: "Surgery Created successfully",
+                        status: "SUCCESS"
+                    })
+                }).catch(error => {
+                    res.status(500).json({
+                        message: "Problem occured while updating the surgery",
+                        status: "FAILURE"
+                    })
+                })
+                break;
+            default:
+                console.log("Wrong status");
+        }
+        console.log(data);
+
     }).catch(error => {
-        res.status(500).json({
-            message: "Problem occured while updating the surgery",
-            status: "FAILURE"
-        })
-    })
+        result = { 'success': false, 'message': 'Some Error', 'error': error };
+        console.log(error);
+    });
+    
+    // Surgery.findOneAndUpdate({ id: req.params.id }, {
+    //     status: req.body.status
+    // }).then(result => {
+    //     console.log("Successfully updated the surgery");
+    //     res.status(200).json({
+    //         message: "Surgery Created successfully",
+    //         status: "SUCCESS"
+    //     })
+    // }).catch(error => {
+    //     res.status(500).json({
+    //         message: "Problem occured while updating the surgery",
+    //         status: "FAILURE"
+    //     })
+    // })
 })
 
 router.delete('/delete/:id', (req, res) => {
