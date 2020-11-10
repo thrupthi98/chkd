@@ -10,8 +10,8 @@ export class SurgeryService{
 
     constructor(private http: HttpClient) {}
 
-    createSurgery(data){
-        return this.http.post(this.baseUri, data)
+    createSurgery(warning, data){
+        return this.http.post(`${this.baseUri}/${warning}`, data)
     }
 
     getUpcomingSurgery(){

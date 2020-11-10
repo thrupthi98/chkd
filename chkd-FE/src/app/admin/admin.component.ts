@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, Output, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
@@ -21,6 +21,7 @@ import { PatientService } from 'src/services/Patient.service';
 import { MessagesService } from 'src/services/Messages.service';
 import io from "socket.io-client";
 import { HttpClient } from '@angular/common/http';
+import { MatPaginator } from '@angular/material/paginator';
 
 
 @Component({
@@ -48,6 +49,10 @@ export class AdminComponent implements OnInit {
     {value: 'Venue'}
   ];
 
+  datemask = [/\d/, /\d/,/\d/, '-', /\d/, /\d/,/\d/, '-', /\d/, /\d/, /\d/, /\d/];
+
+  today = new Date();
+
   tableColumns = ['action','type','surgeon','patient','date','time','venue','status','change']
   expandedElement: TableData | null;
 
@@ -74,6 +79,8 @@ export class AdminComponent implements OnInit {
   surgery = new FormControl();
   surgeon = new FormControl();
   venue = new FormControl();
+  dob = new FormControl();
+  contact = new FormControl();
 
   venuList:any;
   surgeonList:any = []
@@ -86,6 +93,8 @@ export class AdminComponent implements OnInit {
 
   private Soketurl = 'http://localhost:3000';
   private socket;
+
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -159,6 +168,7 @@ export class AdminComponent implements OnInit {
           element['messages']++;
         }
       });
+      this.sortedList.paginator = this.paginator;
     });
 
   }, (err)=>{
@@ -249,6 +259,8 @@ export class AdminComponent implements OnInit {
       var surgeryTypeValue = this.surgery.value;
       var surgeonNameValue = this.surgeon.value;
       var venueValue = this.venue.value;
+      var dobValue = this.dob.value;
+      var contactValue = this.contact.value;
       if(filterValue == null || filterValue == undefined){
         filterValue = "";
       }
@@ -261,11 +273,21 @@ export class AdminComponent implements OnInit {
       if(venueValue == null || venueValue == undefined){
         venueValue = "";
       }
+      if(dobValue == null || dobValue == undefined){
+        dobValue = "";
+      }else{
+        dobValue = new Date(dobValue).toLocaleDateString('en-US').toString()
+      }
+      if(contactValue == null || contactValue == undefined){
+        contactValue = ""
+      }
     this.newList = this.surgeryList.filter(option =>
         option.type.toLowerCase().includes(surgeryTypeValue.toLowerCase())
       && option.surgeon.toLowerCase().includes(surgeonNameValue.toLowerCase())
       && option.venue.toLowerCase().includes(venueValue.toLowerCase())
-      && (
+      && option.patientDetails[0].dob.includes(dobValue)
+      && option.patientDetails[0].contact.includes(contactValue.split('-').join('').replace(/_/g,''))
+      &&(
         option.surgeon.toLowerCase().includes(filterValue.toLowerCase())
       || option.type.toLowerCase().includes(filterValue.toLowerCase())
       || option.venue.toLowerCase().includes(filterValue.toLowerCase())

@@ -2,19 +2,78 @@
     padding: 70px;
 }
 
-.btn {
+.avg {
     margin: 10px;
-    color: white;
+    color: rgb(0, 0, 148);
+    border-color: rgb(0, 0, 148);
+    background-color: transparent;
+    padding: 8px;
+    border-radius: 5px;
 }
 
-.btn:focus,
-.btn:hover,
-.btn-active {
+.max {
+    margin: 10px;
+    color: rgb(128, 2, 2);
+    border-color: rgb(128, 2, 2);
+    background-color: transparent;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.min {
+    margin: 10px;
+    color: rgb(1, 78, 1);
+    border-color: rgb(1, 78, 1);
+    background-color: transparent;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+.avg:focus,
+.avg:hover,
+.avg:active,
+.avg-active {
     outline: none;
     box-shadow: none;
+    background-color: rgb(0, 0, 148);
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.max:focus,
+.max:hover,
+.max:active,
+.max-active {
+    outline: none;
+    box-shadow: none;
+    background-color: rgb(128, 2, 2);
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.min:focus,
+.min:hover,
+.min:active,
+.min-active {
+    outline: none;
+    box-shadow: none;
+    background-color: rgb(1, 78, 1);
+    color: white;
+    padding: 8px;
+    border-radius: 5px;
+    margin: 10px;
 }
 
 .mat-form-field {
     float: right !important;
     margin-top: 5px;
+}
+
+.card {
+    margin: 30px 0;
+    padding: 10px;
 }

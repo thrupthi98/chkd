@@ -152,8 +152,11 @@ label {
 }
 
 .col-lg-2 {
-    padding-left: 0;
-    padding-right: 20px;
+    padding: 0 !important;
+}
+
+.col-lg-12 {
+    padding: 5px !important;
 }
 
 h3 {
@@ -212,4 +215,9 @@ h3 {
 ::ng-deep .ng-chat-window {
     bottom: 20% !important;
     right: 70% !important;
+}
+
+::ng-deep .mat-datepicker-content-touch .mat-calendar {
+    width: 0 !important;
+    height: 0 !important;
 }

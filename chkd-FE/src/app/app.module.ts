@@ -25,6 +25,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatChipsModule} from '@angular/material/chips';
 
 import { CarouselModule, WavesModule } from 'angular-bootstrap-md';
 import { TextMaskModule } from 'angular2-text-mask';
@@ -102,6 +103,7 @@ import { AnalyticsComponent } from './analytics/analytics.component';
     MatToolbarModule,
     MatSidenavModule,
     MatBadgeModule,
+    MatChipsModule,
     CarouselModule,
     WavesModule,
     TextMaskModule,

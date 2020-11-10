@@ -1,7 +1,7 @@
 <div class="analytics-wrap">
-    <button class="btn" style="background-color: rgb(0, 0, 148);">Average Time</button>
-    <button class=btn style="background-color: rgb(128, 2, 2)">Max Time</button>
-    <button class="btn" style="background-color: rgb(1, 78, 1)">Min Time</button>
+    <button [ngClass]="(average)?'avg-active':'avg'" (click)="activate('average')">Average Time</button>
+    <button [ngClass]="(maximum)?'max-active':'max'" (click)="activate('maximum')">Max Time</button>
+    <button [ngClass]="(minimum)?'min-active':'min'" (click)="activate('minimum')">Min Time</button>
     <mat-form-field class="col-lg-3" appearance="outline">
         <mat-label>Select Surgery Type</mat-label>
         <input matInput [matAutocomplete]="auto" [formControl]="surgery" />
@@ -11,6 +11,16 @@
             </mat-option>
         </mat-autocomplete>
     </mat-form-field>
+    <div class="col-lg-12">
+        <div class="card" *ngIf="showList.length != 0">
+            <mat-chip-list #chipList>
+                <mat-chip *ngFor="let items of showList" (removed)="remove(items)">
+                    {{items}}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+            </mat-chip-list>
+        </div>
+    </div>
     <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis" [stroke]="chartOptions.stroke" [colors]="chartOptions.colors" [dataLabels]="chartOptions.dataLabels" [legend]="chartOptions.legend" [markers]="chartOptions.markers"
         [grid]="chartOptions.grid" [yaxis]="chartOptions.yaxis" [title]="chartOptions.title"></apx-chart>
 </div>

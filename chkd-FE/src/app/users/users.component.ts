@@ -19,8 +19,7 @@ export class UsersComponent implements OnInit {
 
   roles: any = [
     {value: 'Admin'},
-    {value: 'Pre-op Co-ordinator'},
-    {value: 'Patient'}
+    {value: 'Pre-op Co-ordinator'}
   ];
 
   today = new Date();
