@@ -11,6 +11,16 @@ const firebaseConfig = {
     measurementId: "G-P85N62C5RK"
 };
 
+// var firebaseConfig = {
+//     apiKey: "AIzaSyBof-xhNDwJqY4hEfs0iE9fMWFc0f9MNRQ",
+//     authDomain: "complaintform-aea71.firebaseapp.com",
+//     databaseURL: "https://complaintform-aea71.firebaseio.com",
+//     projectId: "complaintform-aea71",
+//     storageBucket: "complaintform-aea71.appspot.com",
+//     messagingSenderId: "936948767610",
+//     appId: "1:936948767610:web:31316815fcf527605d54c3"
+// };
+
 admin.initializeApp(firebaseConfig);
 const db = admin.firestore();
 

@@ -12,35 +12,128 @@ const Token = require("../models/token")
 const generateId = require("../helper/generateId");
 const Patient = require('../models/patient');
 
-router.post("/", (req, res) => {
+router.post("/:warning", (req, res) => {
     console.log(req.body.date + " " + req.body.time);
-    Surgery.create({
-        id: nanoid(9),
-        pt_id: req.body.pt_id,
-        type: req.body.type,
-        dateTime: new Date(req.body.date + " " + req.body.time).getTime(),
-        venue: req.body.venue,
-        surgeon: req.body.surgeon,
-        prescription: req.body.prescription,
-        instructions: req.body.instructions,
-        status: req.body.status,
-        checkin: 0,
-        inSurgery: 0,
-        postSurgery: 0,
-        discharged: 0
-    }).then(result => {
-        console.log("Successfully created the surgery");
-        res.status(200).json({
-            message: "Surgery Created successfully",
-            status: "SUCCESS"
+    console.log(req.params.warning)
+    if (req.params.warning == 'beforeWarning') {
+        Surgery.find({
+            surgeon: req.body.surgeon,
+            dateTime: {
+                $gt: (new Date(req.body.date + " " + req.body.time).getTime() - (12 * 60 * 60 * 1000)),
+                $lt: (new Date(req.body.date + " " + req.body.time).getTime() + (12 * 60 * 60 * 1000))
+            },
+            status: { $ne: 'Patient Discharged' }
+        }).then(docresponse => {
+            Surgery.find({
+                pt_id: req.body.pt_id,
+                dateTime: {
+                    $gt: (new Date(req.body.date + " " + req.body.time).getTime() - (12 * 60 * 60 * 1000)),
+                    $lt: (new Date(req.body.date + " " + req.body.time).getTime() + (12 * 60 * 60 * 1000))
+                },
+                status: { $ne: 'Patient Discharged' }
+            }).then(async(patresponse) => {
+                if (docresponse.length == 0 && patresponse == 0) {
+                    Surgery.create({
+                        id: nanoid(9),
+                        pt_id: req.body.pt_id,
+                        type: req.body.type,
+                        dateTime: new Date(req.body.date + " " + req.body.time).getTime(),
+                        venue: req.body.venue,
+                        surgeon: req.body.surgeon,
+                        prescription: req.body.prescription,
+                        instructions: req.body.instructions,
+                        status: req.body.status,
+                        checkin: 0,
+                        inSurgery: 0,
+                        postSurgery: 0,
+                        discharged: 0
+                    }).then(result => {
+                        console.log("Successfully created the surgery");
+                        res.status(200).json({
+                            message: "Surgery Created successfully",
+                            status: "SUCCESS"
+                        })
+                    }).catch(error => {
+                        console.log(error)
+                        res.status(500).json({
+                            message: "Problem occured while creating the surgery",
+                            status: "FAILURE"
+                        })
+                    })
+
+                } else {
+                    var pattimeObj = {};
+                    var doctimeObj = {};
+                    if (patresponse.length != 0) {
+                        await patresponse.sort().forEach(ele => {
+                            pattimeObj[ele.dateTime.toString()] = (new Date(req.body.date + " " + req.body.time).getTime() - (ele.dateTime))
+                        })
+                        var patmaxNeg = Math.max(...Object.values(pattimeObj).filter(item => item < 0))
+                        var patminPos = Math.min(...Object.values(pattimeObj).filter(item => item > 0))
+                        var patprev = Object.keys(pattimeObj).find(key => pattimeObj[key] == patmaxNeg)
+                        var patnext = Object.keys(pattimeObj).find(key => pattimeObj[key] == patminPos)
+                    }
+                    if (docresponse.length != 0) {
+                        await docresponse.sort().forEach(ele => {
+                            doctimeObj[ele.dateTime.toString()] = (new Date(req.body.date + " " + req.body.time).getTime() - (ele.dateTime))
+                        })
+                        var docmaxNeg = Math.max(...Object.values(doctimeObj).filter(item => item < 0))
+                        var docminPos = Math.min(...Object.values(doctimeObj).filter(item => item > 0))
+                        var docprev = Object.keys(doctimeObj).find(key => doctimeObj[key] == docmaxNeg)
+                        var docnext = Object.keys(doctimeObj).find(key => doctimeObj[key] == docminPos)
+                    }
+                    res.status(400).json({
+                        message: "Surgery already exists",
+                        status: "BAD_REQUEST",
+                        patprev: patprev,
+                        patnext: patnext,
+                        docprev: docprev,
+                        docnext: docnext
+                    })
+                }
+            }).catch(error => {
+                console.log(error)
+                res.status(500).json({
+                    message: "Problem occured while creating the surgery",
+                    status: "FAILURE"
+                })
+            })
+        }).catch(error => {
+            console.log(error)
+            res.status(500).json({
+                message: "Problem occured while creating the surgery",
+                status: "FAILURE"
+            })
         })
-    }).catch(error => {
-        console.log(error)
-        res.status(500).json({
-            message: "Problem occured while creating the surgery",
-            status: "FAILURE"
+    } else if (req.params.warning == 'afterWarning') {
+        Surgery.create({
+            id: nanoid(9),
+            pt_id: req.body.pt_id,
+            type: req.body.type,
+            dateTime: new Date(req.body.date + " " + req.body.time).getTime(),
+            venue: req.body.venue,
+            surgeon: req.body.surgeon,
+            prescription: req.body.prescription,
+            instructions: req.body.instructions,
+            status: req.body.status,
+            checkin: 0,
+            inSurgery: 0,
+            postSurgery: 0,
+            discharged: 0
+        }).then(result => {
+            console.log("Successfully created the surgery");
+            res.status(200).json({
+                message: "Surgery Created successfully",
+                status: "SUCCESS"
+            })
+        }).catch(error => {
+            console.log(error)
+            res.status(500).json({
+                message: "Problem occured while creating the surgery",
+                status: "FAILURE"
+            })
         })
-    })
+    }
 })
 
 router.get("/upcoming", (req, res) => {

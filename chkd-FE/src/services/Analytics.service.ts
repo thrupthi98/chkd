@@ -14,7 +14,11 @@ export class AnalyticsService{
         return this.http.get(`${this.baseUri}/average/${name}`)
     }
 
-    getMaxTime(){
-        return this.http.get(this.baseUri)
+    getMaxTime(name){
+        return this.http.get(`${this.baseUri}/max/${name}`)
+    }
+
+    getMinTime(name){
+        return this.http.get(`${this.baseUri}/min/${name}`)
     }
 }

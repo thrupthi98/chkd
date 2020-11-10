@@ -1,5 +1,5 @@
 var roles = [
-    { role: "Admin", url: ["/admin", "/users", "/surgery", "/surgeon"] },
+    { role: "Admin", url: ["/admin", "/users", "/surgery", "/surgeon", "/analytics"] },
     { role: "Pre-op Co-ordinator", url: ["/pre-op"] },
     { role: "Patient", url: ["/patient"] }
 ]

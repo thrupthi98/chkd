@@ -261,7 +261,7 @@ export class DialogComponent implements OnInit {
     }else{
       this.invalidForm = false
       if(!this.newUser){
-        this.surgeryService.createSurgery({
+        this.surgeryService.createSurgery('beforeWarning',{
           pt_id: this.patientId,
           type:this.surgeryForm.controls.type.value,
           date:this.surgeryForm.controls.date.value.toLocaleDateString('en-US'),
@@ -279,10 +279,67 @@ export class DialogComponent implements OnInit {
             this.dialog.close()
           })
         },(err)=>{
-          Swal.fire({
-            text: "There was an error while creating the surgery",
-            icon: "error"
-          })
+          if(err.error.status == "BAD_REQUEST" && err.error.message == "Surgery already exists"){
+            console.log(err.error.patprev, err.error.docprev, err.error.patnext, err.error.docnext)
+            if(err.error.patprev != undefined || err.error.patnext != undefined){
+              var pat_text = "The patient already has a pre existing surgery today at " 
+              + new Date(parseInt(err.error.patprev)).toLocaleTimeString('en-US') + " " 
+              + new Date(parseInt(err.error.patnext)).toLocaleTimeString('en-US')
+            }else{
+              var pat_text = ""
+            }
+
+
+            if(err.error.docprev != undefined || err.error.docnext != undefined){
+              var doc_text = ". The surgeon already has a pre existing surgery today at "
+              + new Date(parseInt(err.error.docprev)).toLocaleTimeString('en-US') +  " "
+              + new Date(parseInt(err.error.docnext)).toLocaleTimeString('en-US')
+            }else{
+              var doc_text = ""
+            }
+
+            var swal_text = pat_text.replace(/Invalid Date/g, '') + doc_text.replace(/Invalid Date/g, '')
+            Swal.fire({
+              text: swal_text,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Yes',
+              cancelButtonText: 'No',
+              confirmButtonColor: 'red',
+              cancelButtonColor: 'green'
+            }).then((result) => {
+              if (result.value) {
+                this.surgeryService.createSurgery('afterWarning',{
+                  pt_id: this.patientId,
+                  type:this.surgeryForm.controls.type.value,
+                  date:this.surgeryForm.controls.date.value.toLocaleDateString('en-US'),
+                  time:this.surgeryForm.controls.time.value.toLocaleTimeString('en-US'),
+                  surgeon:this.surgeryForm.controls.surgeon.value,
+                  venue:this.surgeryForm.controls.venue.value,
+                  prescription:this.surgeryForm.controls.prescription.value,
+                  instructions:this.surgeryForm.controls.instructions.value,
+                  status: "Surgery Scheduled"
+                }).subscribe((res)=>{
+                  Swal.fire({
+                    text: "Surgery created successfully",
+                    icon: "success"
+                  }).then(result =>{
+                    this.dialog.close()
+                  })
+                },(err)=>{
+                  Swal.fire({
+                    text: "There was an error while creating the surgery",
+                    icon: "error"
+                  })
+                })
+              }
+            })
+          }else{
+            Swal.fire({
+              text: "There was an error while creating the surgery",
+              icon: "error"
+            })
+          }
         })
       }else{
         this.patientService.registerPatient({
@@ -291,7 +348,7 @@ export class DialogComponent implements OnInit {
           dob: new Date(this.registerForm.controls.dob.value).toLocaleDateString("en-US"),
           contact: this.surgeryForm.controls.contact.value.split("-").join('')
         }).subscribe((result)=>{
-          this.surgeryService.createSurgery({
+          this.surgeryService.createSurgery('beforeWarning',{
             pt_id: result['id'],
             type:this.surgeryForm.controls.type.value,
             date:this.surgeryForm.controls.date.value.toLocaleDateString('en-US'),
@@ -306,19 +363,58 @@ export class DialogComponent implements OnInit {
               text: "Surgery created successfully",
               icon: "success"
             }).then(result =>{
-            this.dialog.close()
+              this.dialog.close()
             })
           },(err)=>{
-            Swal.fire({
-              text: "There was an error while creating the surgery",
-              icon: "error"
-            })
+            if(err.error.status == "BAD_REQUEST" && err.error.message == "Surgery already exists"){
+              var swal_text =  "The surgeon already has a pre existing surgery today at "
+              + new Date(parseInt(err.error.docprev)).toLocaleTimeString('en-US') + " and "
+              + new Date(parseInt(err.error.docnext)).toLocaleTimeString('en-US') + 
+              ". Do you still want to continue?"
+              Swal.fire({
+                text: swal_text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                confirmButtonColor: 'red',
+                cancelButtonColor: 'green'
+              }).then((result) => {
+                if (result.value) {
+                  this.surgeryService.createSurgery('afterWarning',{
+                    pt_id: this.patientId,
+                    type:this.surgeryForm.controls.type.value,
+                    date:this.surgeryForm.controls.date.value.toLocaleDateString('en-US'),
+                    time:this.surgeryForm.controls.time.value.toLocaleTimeString('en-US'),
+                    surgeon:this.surgeryForm.controls.surgeon.value,
+                    venue:this.surgeryForm.controls.venue.value,
+                    prescription:this.surgeryForm.controls.prescription.value,
+                    instructions:this.surgeryForm.controls.instructions.value,
+                    status: "Surgery Scheduled"
+                  }).subscribe((res)=>{
+                    Swal.fire({
+                      text: "Surgery created successfully",
+                      icon: "success"
+                    }).then(result =>{
+                      this.dialog.close()
+                    })
+                  },(err)=>{
+                    Swal.fire({
+                      text: "There was an error while creating the surgery",
+                      icon: "error"
+                    })
+                  })
+                }
+              })
+            }else{
+              Swal.fire({
+                text: "There was an error while creating the surgery",
+                icon: "error"
+              })
+            }
           })
         },(err)=>{
-          if(err.error.status == "BAD_REQUEST"){
-            this.newUser = false;
-            this.submitForm;
-          }
+          console.log(err)
           Swal.fire({
             text: "There was an error while creating the surgery",
             icon: "error"
