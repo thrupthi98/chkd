@@ -44,11 +44,12 @@ export class SurgeryService{
         }) 
     }
 
-    getSurgeonSurgery(){
+    getSurgeonSurgery(date){
         return this.http.get(`${this.baseUri}/surgeonsurgery`,{
             headers: {
                 "Content-Type": "application/json",
                 "X-auth-header": sessionStorage.getItem("UUID"),
+                "data": date
               },
         }) 
     }

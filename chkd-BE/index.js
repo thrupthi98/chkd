@@ -18,6 +18,8 @@ const messages = require("./routes/messages");
 const socketRoute = require("./routes/socket");
 const analytics = require("./routes/analytics");
 
+const surgeryData = require("./models/surgery")
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -58,6 +60,26 @@ app.use("/patient", patient)
 app.use("/messages", messages)
 app.use("/analytics", analytics)
 
-
+app.post('/emitiomsg', (req, res) => {
+    if (req.body.idTo != 999) {
+        console.log("id - " + req.body.idTo);
+        surgeryData.findOne({ id: req.body.idTo }).then(result => {
+            console.log(result.pt_id, req.body.content);
+            data = {}
+            data.id = result.pt_id;
+            data.toId = req.body.idTo;
+            var response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
+            io.emit(result.pt_id, response);
+        })
+    } else {
+        data = {}
+        data.fromId = req.body.idFrom;
+        var response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
+        io.emit(999, response);
+    }
+    res.status(200).json({
+        messages: "Sent successfully"
+    })
+})
 
 http.listen(port, () => console.log("app running at - " + port))

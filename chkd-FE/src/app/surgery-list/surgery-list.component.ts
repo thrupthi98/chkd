@@ -29,6 +29,7 @@ export class SurgeryListComponent implements OnInit {
 
   selectedIndex = 0;
 
+  date = new FormControl(new Date());
 
   constructor(
     public dialog: MatDialog,
@@ -42,17 +43,17 @@ export class SurgeryListComponent implements OnInit {
   var url = this.router.url;
 
   this.authenticationService.checkAccess(url).subscribe((res)=>{  
-    this.surgeryService.getSurgeonSurgery().subscribe((res)=>{
+    this.surgeryService.getSurgeonSurgery((this.date.value).toLocaleDateString('en-US')).subscribe((res)=>{
       this.surgeryList = res['data']
       this.surgeon = res['name']
+
+      this.surgeryList.forEach(item => {
+        item.date = new Date(item.dateTime).toLocaleDateString("en-US")
+        item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
+      });
     },(err)=>{
       console.log("error")
     })
-
-    this.surgeryList.forEach(item => {
-      item.date = new Date(item.dateTime).toLocaleDateString("en-US")
-      item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
-    });
 
   },(err)=>{
     if(err.error != undefined && err.error.status == "UN_AUTHORISED"){
