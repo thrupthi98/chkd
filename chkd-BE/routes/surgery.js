@@ -315,6 +315,8 @@ router.get("/prevpatientsurgery", (req, res) => {
 
 router.get("/surgeonsurgery", (req, res) => {
     var token = req.header("x-auth-header");
+    var date = req.header("data");
+    console.log(new Date(date).getTime())
     Token.findOne({ hash: token }).then(async(result) => {
         if (result == null || result == undefined) {
             res.status(404).json({
@@ -335,7 +337,8 @@ router.get("/surgeonsurgery", (req, res) => {
                     {
                         $match: {
                             dateTime: {
-                                $gte: new Date().getTime()
+                                $gte: new Date(date).getTime(),
+                                $lt: new Date(date).getTime() + (24 * 60 * 60 * 1000)
                             },
                             status: {
                                 $ne: "Patient Discharged"

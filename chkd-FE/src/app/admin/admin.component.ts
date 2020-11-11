@@ -162,7 +162,9 @@ export class AdminComponent implements OnInit {
     })
 
     this.socket.on(999, (data) => {
-      this.ngChatInstance.triggerCloseChatWindow(data['data']['fromId'])
+      if(this.ngChatInstance != undefined){
+        this.ngChatInstance.triggerCloseChatWindow(data['data']['fromId'])
+      }
       this.sortedList.forEach(element => {
         if(element.id == data['data']['fromId']){
           element['messages']++;
