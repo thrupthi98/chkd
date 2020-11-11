@@ -1,9 +1,5 @@
-.surgery-wrap {
-    padding: 10px 40px;
-}
-
-.header {
-    height: 40px;
+.patient-wrap {
+    padding: 60px;
 }
 
 .row {
@@ -13,143 +9,179 @@
 h1 {
     text-align: center;
     font-size: 30px;
-    font-family: Arial, Helvetica, sans-serif;
-    margin-bottom: 40px;
-    line-height: 150%;
-}
-
-.btn {
-    background-color: rgb(251, 255, 43);
-    color: black;
-    padding: 10px;
-    margin-top: 5px;
-    float: right;
-}
-
-.items {
-    width: 190px;
-    border: none !important;
-    outline: none;
-    border: none;
-}
-
-.items:hover .items:focus,
-.items:active {
-    outline: none;
-    box-shadow: none;
-    border: none;
-}
-
-.btn:hover,
-.btn:focus,
-.btn:active {
-    outline: none;
-    box-shadow: none;
-}
-
-.table {
-    margin-top: 20px;
-}
-
-tr {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-}
-
-.collapse {
-    display: none;
-    grid-column: 1/-1;
-    background-color: rgb(243, 243, 243);
-}
-
-.content {
-    padding: 10px 75px;
-}
-
-.col-lg-5 {
-    padding: 0 !important;
-}
-
-label {
-    font-weight: bold;
-    font-size: 15px;
-}
-
-.mat-icon {
-    font-size: 20px;
-    cursor: pointer;
-    margin-right: 10px;
-}
-
-.less {
-    display: none;
-}
-
-.edit {
-    color: blue;
-}
-
-.delete {
-    color: red;
-}
-
-.header-btn {
-    margin-top: 10px;
-    background-color: rgb(251, 255, 43);
-    float: right;
-    margin-right: 20px;
-}
-
-.header-btn:hover,
-.header-btn:focus {
-    border: none;
-    outline: none;
-    box-shadow: none;
-}
-
-.header-icon {
-    margin: 0 !important;
-    color: black;
-}
-
-.col-lg-2 {
-    padding-left: 0;
-    padding-right: 20px;
+    margin-bottom: 20px;
 }
 
 h3 {
-    font-size: 20px;
-    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
 }
 
-.card {
-    height: 100%;
-    border-right: none;
-    border-top: none;
-    border-bottom: none;
-    border-left: 2px solid rgb(209, 195, 195);
-    border-radius: 0;
+.status {
+    padding: 20px 30px;
 }
 
-.mat-checkbox {
-    font-size: 18px;
-    margin-right: 20px;
+.surgery {
+    padding: 20px 0;
 }
 
-.accounts-btn {
+.circles {
+    height: 45px;
+    width: 45px;
+    border: 2px solid #eeeeee;
+    background-color: #eeeeee;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.active {
+    border: 2px solid rgb(5, 204, 5);
+    background-color: rgb(5, 204, 5);
+    width: 250px;
+    height: 5px;
+    margin-bottom: 13px;
+    display: inline-block;
+    text-align: center;
+    margin: "0 auto";
+}
+
+.current {
+    background-color: rgb(5, 204, 5);
+}
+
+.bar {
+    width: 245px;
+    height: 5px;
+    margin-bottom: 13px;
+    border: 2px solid #e4e3e3;
+    background-color: #e4e3e3;
+    display: inline-block;
+    text-align: center;
+    margin: "0 auto";
+}
+
+.icon {
+    margin: 8px;
+}
+
+p {
     margin-top: 10px;
-    background-color: rgb(251, 255, 43);
-    float: right;
-    margin-right: 80px;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 3px 6px 20px 3px rgb(219, 213, 213);
 }
 
-.accounts-btn:hover,
-.accounts-btn:focus,
-.accounts-btn:active {
-    outline: none;
-    border: none;
+.color1 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid #eeeeee;
+    background-color: #eeeeee;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.color2 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid #ffa500;
+    background-color: #ffa500;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.color3 {
+    height: 15px;
+    width: 15px;
+    border: 2px solid rgb(5, 204, 5);
+    background-color: rgb(5, 204, 5);
+    border-radius: 50%;
+    display: inline-block;
+}
+
+small {
+    margin-top: 15px;
+}
+
+::ng-deep .mat-tab-header {
+    display: none !important;
+}
+
+::ng-deep .mat-tab-body-content {
+    padding: 20px !important;
+}
+
+.outer {
+    text-align: center;
+}
+
+.button-grp {
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.prev {
+    background-color: #ffa500;
+    margin: 0 10px;
+    width: 100px;
+}
+
+.next {
+    background-color: rgb(5, 204, 5);
+    margin: 0 10px;
+    width: 100px;
+}
+
+table {
+    width: 100%;
+}
+
+tr.example-detail-row {
+    height: 0;
+}
+
+tr.example-element-row:not(.example-expanded-row):hover {
+    background: #f5f5f5;
+}
+
+.example-expanded-row {
+    background: #f5f5f5;
+}
+
+.example-element-row td {
+    border-bottom-width: 0;
+}
+
+.example-element-detail {
+    overflow: hidden;
+}
+
+.example-element-symbol {
+    font-weight: bold;
+    font-size: 40px;
+    line-height: normal;
+}
+
+.example-element-description {
+    padding: 20px 0;
+}
+
+.example-element-description-attribution {
+    opacity: 0.5;
+}
+
+.history {
+    background-color: #ffa500;
+    margin: 0 10px;
+    float: right;
+}
+
+.mat-icon {
+    cursor: pointer;
+}
+
+.message {
+    float: right !important;
+    color: rgb(125, 175, 50);
+    font-size: 30px;
+}
+
+::ng-deep .ng-chat-window {
+    position: relative !important;
+    bottom: 300px !important;
 }

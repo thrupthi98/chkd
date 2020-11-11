@@ -17,5 +17,4 @@ export class SurgeonService{
     getAllSurgeons(){
         return this.http.get(this.baseUri)
     }
-
 }

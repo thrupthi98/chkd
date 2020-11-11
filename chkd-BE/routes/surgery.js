@@ -8,9 +8,10 @@ const jwt = require("jsonwebtoken");
 
 const Surgery = require("../models/surgery")
 const Token = require("../models/token")
+const Patient = require('../models/patient');
+const Users = require('../models/user');
 
 const generateId = require("../helper/generateId");
-const Patient = require('../models/patient');
 
 router.post("/:warning", (req, res) => {
     console.log(req.body.date + " " + req.body.time);
@@ -137,6 +138,7 @@ router.post("/:warning", (req, res) => {
 })
 
 router.get("/upcoming", (req, res) => {
+
     Surgery.aggregate([{
             $lookup: {
                 from: "patients",
@@ -298,6 +300,73 @@ router.get("/prevpatientsurgery", (req, res) => {
                 console.log(err)
                 res.status(500).json({
                     message: "paroblem fetching patient surgery details",
+                    status: 'FAILURE'
+                })
+            })
+        }
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            message: "paroblem fetching patient surgery",
+            status: 'FAILURE'
+        })
+    })
+})
+
+router.get("/surgeonsurgery", (req, res) => {
+    var token = req.header("x-auth-header");
+    Token.findOne({ hash: token }).then(async(result) => {
+        if (result == null || result == undefined) {
+            res.status(404).json({
+                message: "No token Present",
+                status: "NOT_FOUND"
+            })
+        } else {
+            var userId = jwt.decode(result.token).id
+            Users.findOne({ id: userId }).then((response) => {
+                Surgery.aggregate([{
+                        $lookup: {
+                            from: "patients",
+                            localField: "pt_id",
+                            foreignField: "id",
+                            as: "patientDetails"
+                        }
+                    },
+                    {
+                        $match: {
+                            dateTime: {
+                                $gte: new Date().getTime()
+                            },
+                            status: {
+                                $ne: "Patient Discharged"
+                            },
+                            surgeon: response.fname + "" + response.lname
+                        }
+                    },
+                    {
+                        $sort: {
+                            dateTime: 1
+                        }
+                    }
+
+                ]).then((result) => {
+                    res.status(200).json({
+                        message: "Surgery fetched successfully",
+                        status: "SUCCESS",
+                        data: result,
+                        name: response.fname + " " + response.lname
+                    })
+                }).catch((err) => {
+                    console.log(err)
+                    res.status(500).json({
+                        message: "paroblem fetching patient surgery",
+                        status: 'FAILURE'
+                    })
+                })
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({
+                    message: "paroblem fetching patient surgery",
                     status: 'FAILURE'
                 })
             })
