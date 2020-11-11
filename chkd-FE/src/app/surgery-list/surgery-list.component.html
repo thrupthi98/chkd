@@ -1,137 +1,65 @@
-<div class="header">
-    <button mat-mini-fab class="header-btn" [matMenuTriggerFor]="settings">
-        <mat-icon class="header-icon">person</mat-icon>
-      </button>
-    <mat-menu #settings="matMenu">
-        <button class="items" mat-menu-item (click)="logout()">Logout</button>
-        <button class="items" mat-menu-item (click)="resetDialog()">Reset Password</button>
-    </mat-menu>
-</div>
-<hr>
-<div class="surgery-wrap">
-    <div *ngIf="upcoming">
-        <h1>List of Surgeries</h1>
-        <button class="btn" (click)="showPrevious()">
-        Previous Surgeries
-        </button>
-    </div>
-    <div *ngIf="!upcoming">
-        <h1>Previous Surgeries</h1>
-        <button class="btn" (click)="showPrevious()">
-            Upcoming Surgeries
-        </button>
-    </div>
-    <div class="row col-lg-12">
-        <div class="col-lg-3">
-            <mat-form-field appearance="outline" class="col-lg-12">
-                <mat-label>Search</mat-label>
-                <input matInput [formControl]="search" (keyup)="searchFilter()">
-                <mat-icon matSuffix>search</mat-icon>
-            </mat-form-field>
-        </div>
-        <div class="col-lg-3">
-            <mat-checkbox class="col-lg-12" id="type" (change)="addFilter($event)">
-                Surgery Type
-            </mat-checkbox>
-            <div class="col-lg-12" *ngIf="displayType">
-                <mat-form-field class="col-lg-12">
-                    <mat-label>Surgery Type</mat-label>
-                    <input matInput [matAutocomplete]="auto" (keyup)="searchFilter()" [formControl]="surgery" />
-                    <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let option of filteredSurgerykywds | async" [value]="option" (click)="searchFilter()">
-                            {{ option }}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <mat-checkbox class="col-lg-12" id="surgeon" (change)="addFilter($event)">
-                Surgeon Name
-            </mat-checkbox>
-            <div class="col-lg-12" *ngIf="displaySurgeon">
-                <mat-form-field class="col-lg-12">
-                    <mat-label>Surgery Name</mat-label>
-                    <input matInput [matAutocomplete]="auto" (keyup)="searchFilter()" [formControl]="surgeon" />
-                    <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let option of filteredSurgeonkywds | async" [value]="option.fname + ' ' + option.lname" (click)="searchFilter()">
-                            {{ option.fname + " " + option.lname}}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <mat-checkbox class="col-lg-12" id="venue" (change)="addFilter($event)">
-                Venue
-            </mat-checkbox>
-            <div class="col-lg-12" *ngIf="displayVenue">
-                <mat-form-field class="col-lg-12">
-                    <mat-label>Venue</mat-label>
-                    <input matInput [matAutocomplete]="auto" (keyup)="searchFilter()" [formControl]="venue" />
-                    <mat-autocomplete #auto="matAutocomplete">
-                        <mat-option *ngFor="let option of filteredVenuekywds | async" [value]="option" (click)="searchFilter()">
-                            {{ option }}
-                        </mat-option>
-                    </mat-autocomplete>
-                </mat-form-field>
-            </div>
-        </div>
-    </div>
-    <div class="table-responsive col-lg-12" *ngIf="newList.length != 0">
-        <table class="table" matSort (matSortChange)="sortData($event)">
-            <thead>
-                <tr>
-                    <th>
-                        <mat-icon (click)="openDialog('create','all')">add_circle_outline</mat-icon>
-                    </th>
-                    <th>Surgery Type</th>
-                    <th>Surgeon Name</th>
-                    <th>Patient Name</th>
-                    <th mat-sort-header="date">Date</th>
-                    <th mat-sort-header="time">Time</th>
-                    <th>Venue</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let data of sortedList; let i= index">
-                    <td>
-                        <mat-icon (click)="show(i)" id=more{{i}}>expand_more</mat-icon>
-                        <mat-icon class="less" (click)="show(i)" id=less{{i}}>expand_less</mat-icon>
-                        <mat-icon class="edit" (click)="openDialog('edit',data.id)">edit</mat-icon>
-                        <mat-icon class="delete" (click)="delete(data.id)">delete</mat-icon>
-                    </td>
-                    <td>{{data.type}}</td>
-                    <td>{{data.surgeon}}</td>
-                    <td>{{data.patient}}</td>
-                    <td>{{data.date}}</td>
-                    <td>{{data.time}}</td>
-                    <td>{{data.venue}}</td>
-                    <div class="collapse" id={{i}}>
-                        <div class="row content col-lg-12">
-                            <div class="col-lg-1"></div>
-                            <div class="inner col-lg-4">
-                                <label>Prescreption</label>
-                                <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
-                                <p *ngIf="data.prescription == ''">No prescriptions available</p>
-                            </div>
-                            <div class="inner col-lg-4">
-                                <label>Instructions</label>
-                                <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
-                                <p *ngIf="data.instructions == ''">No instructions available</p>
-                            </div>
-                            <div class="inner col-lg-2">
-                                <label>Patient Age</label>
-                                <p>{{data.patientAge}}</p>
-                            </div>
-                            <div class="col-lg-1"></div>
-                        </div>
+<div class="surgeon-wrap">
+    <div class="patient-wrap">
+        <h2>Welcome! {{surgeon}}</h2>
+        <h1>Your Surgeries</h1>
+        <mat-tab-group mat-stretch-tabs class="example-stretched-tabs mat-elevation-z4" animationDuration="0ms" [selectedIndex]="selectedIndex">
+            <mat-tab class="list" *ngFor="let data of surgeryList; let j= index">
+                <h2>Surgery Details</h2>
+                <div class="surgery row col-lg-12">
+                    <div class="col-lg-3">
+                        <h3>Surgery Type</h3>
+                        <p>{{data.type}}</p>
                     </div>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div *ngIf="newList.length == 0">
-        <h1>No Data Available</h1>
+                    <div class="col-lg-2">
+                        <h3>Venue</h3>
+                        <p>{{data.venue}}</p>
+                    </div>
+                    <div class="col-lg-2">
+                        <h3>Date</h3>
+                        <p>{{data.date}}</p>
+                    </div>
+                    <div class="col-lg-2">
+                        <h3>Time</h3>
+                        <p>{{data.time}}</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <h3>Prescription</h3>
+                        <p *ngIf="data.prescription != ''">{{data.prescription}}</p>
+                        <p *ngIf="data.prescription == ''">No Prescription Available</p>
+                    </div>
+                    <div class="col-lg-6">
+                        <h3>Instructions</h3>
+                        <p *ngIf="data.instructions != ''">{{data.instructions}}</p>
+                        <p *ngIf="data.instructions == ''">No Instructions Available</p>
+                    </div>
+                </div>
+                <hr>
+                <h2>Patient Details</h2>
+                <div class="surgery row col-lg-12">
+                    <div class="col-lg-3">
+                        <h3>Name</h3>
+                        <p>{{data.patientDetails[0].fname + " " + data.patientDetails[0].lname}}</p>
+                    </div>
+                    <div class="col-lg-3">
+                        <h3>Contact</h3>
+                        <p>{{data.patientDetails[0].contact}}</p>
+                    </div>
+                    <div class="col-lg-3">
+                        <h3>Date of Birth</h3>
+                        <p>{{data.patientDetails[0].dob}}</p>
+                    </div>
+                    <div class="col-lg-3">
+                        <h3>Suregry Status</h3>
+                        <p>{{data.status}}</p>
+                    </div>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+        <div class="outer">
+            <div class="button-grp">
+                <button class="btn prev" *ngIf="selectedIndex != 0 && surgeryList.length != 0" (click)="prev()">Previous</button>
+                <button class="btn next" *ngIf="(selectedIndex != (surgeryList.length)-1) && surgeryList.length != 0" (click)="next()">Next</button>
+            </div>
+        </div>
     </div>
 </div>

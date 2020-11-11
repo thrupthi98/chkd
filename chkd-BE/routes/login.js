@@ -35,9 +35,9 @@ router.post('/', (req, res) => {
                         message: "login successful",
                         status: "SUCCESS",
                         UUID: response.hash,
-                        name : fullName,
-                        dob : DOB,
-                        contact : phone,
+                        name: fullName,
+                        dob: DOB,
+                        contact: phone,
                         returnUrl: roles.filter(data => data.role == result.role)[0].url[0]
                     })
                 }).catch(error => {

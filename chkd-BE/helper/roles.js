@@ -1,7 +1,8 @@
 var roles = [
     { role: "Admin", url: ["/admin", "/users", "/surgery", "/surgeon", "/analytics"] },
     { role: "Pre-op Co-ordinator", url: ["/pre-op"] },
-    { role: "Patient", url: ["/patient"] }
+    { role: "Patient", url: ["/patient"] },
+    { role: "Surgeon", url: ["/pre-op"] }
 ]
 
 function authorize(role, url) {
