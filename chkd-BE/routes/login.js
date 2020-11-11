@@ -21,7 +21,7 @@ router.post('/', (req, res) => {
             })
         } else {
             var fullName = result.fname + " " + result.lname ;
-            var DOB = result.dob.split('T')[0];
+            var DOB = new Date(result.dob).toLocaleDateString('en-US');
             var phone = result.contact;
             var validateUser = await saltHash.validatePass(req.body.password, result.password)
             if (validateUser) {

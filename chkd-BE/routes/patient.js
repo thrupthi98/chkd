@@ -68,12 +68,13 @@ router.post("/login", async(req, res) => {
                     token: userID,
                     hash: UUID,
                 }).then(response => {
+                    var DOB = new Date(result.dob).toLocaleDateString('en-US');
                     res.status(200).json({
                         message: "login successful",
                         status: "SUCCESS",
                         UUID: response.hash,
                         name: result.fname + " " + result.lname,
-                        dob: result.dob,
+                        dob: DOB,
                         email: result.email,
                         contact: result.contact,
                         password: result.password,
