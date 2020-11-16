@@ -20,8 +20,8 @@ router.post('/', (req, res) => {
                 status: "BAD_REQUEST"
             })
         } else {
-            var fullName = result.fname + " " + result.lname;
-            var DOB = result.dob.split('T')[0];
+            var fullName = result.fname + " " + result.lname ;
+            var DOB = new Date(result.dob).toLocaleDateString('en-US');
             var phone = result.contact;
             var validateUser = await saltHash.validatePass(req.body.password, result.password)
             if (validateUser) {
