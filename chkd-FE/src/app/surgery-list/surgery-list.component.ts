@@ -1,19 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { SurgeryService } from 'src/services/Surgery.service';
-import { DialogComponent } from './dialog/dialog.component';
-import { map, startWith } from "rxjs/operators";
-import Swal from 'sweetalert2';
-import { KywdsService } from 'src/services/Kywds.service';
-import { LoginService } from 'src/services/Login.service';
-import { Sort } from '@angular/material/sort';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/services/Authentication.service';
-import { SurgeryTypeService } from 'src/services/SurgeryType.service';
-import { SurgeonService } from 'src/services/Surgeon.service';
-import { ResetPassComponent } from '../reset-pass/reset-pass.component';
+import { ChatAdapter, ChatParticipantStatus, ChatParticipantType, IChatController } from 'ng-chat';
+import io from "socket.io-client";
+import { MessagesService } from 'src/services/Messages.service';
+import { PatientService } from 'src/services/Patient.service';
+import { MessageAdapter } from '../adapter/message-adapter';
+import { HttpClient } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-surgery-list',
@@ -21,6 +18,14 @@ import { ResetPassComponent } from '../reset-pass/reset-pass.component';
   styleUrls: ['./surgery-list.component.css']
 })
 export class SurgeryListComponent implements OnInit {
+
+  @ViewChild('ngChatInstance') protected ngChatInstance: IChatController;
+
+  public adapter: ChatAdapter;
+  userId = 999;
+
+  private Soketurl = 'http://localhost:3000';
+  private socket;
 
   surgeryList:any = [];
   newList:any = [];
@@ -35,25 +40,32 @@ export class SurgeryListComponent implements OnInit {
     public dialog: MatDialog,
     private surgeryService: SurgeryService,
     private router: Router,
-    private authenticationService: AuthService
+    private authenticationService: AuthService,
+    private messagesService : MessagesService,
+    private patientService: PatientService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
   
-  var url = this.router.url;
+    this.socket = io.connect(this.Soketurl);
+    var url = this.router.url;
 
   this.authenticationService.checkAccess(url).subscribe((res)=>{  
-    this.surgeryService.getSurgeonSurgery((this.date.value).toLocaleDateString('en-US')).subscribe((res)=>{
-      this.surgeryList = res['data']
-      this.surgeon = res['name']
+    
+    this.getSurgery();
 
-      this.surgeryList.forEach(item => {
-        item.date = new Date(item.dateTime).toLocaleDateString("en-US")
-        item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
+    this.socket.on(999, (data) => {
+      if(this.ngChatInstance != undefined){
+        this.ngChatInstance.triggerCloseChatWindow(data['data']['fromId'])
+      }
+      this.surgeryList.forEach(element => {
+        if(element.id == data['data']['fromId']){
+          console.log(element['messages'])
+          element['messages'] ++;
+        }
       });
-    },(err)=>{
-      console.log("error")
-    })
+    });
 
   },(err)=>{
     if(err.error != undefined && err.error.status == "UN_AUTHORISED"){
@@ -71,4 +83,55 @@ prev(){
 next(){
   this.selectedIndex ++;
 }
+
+getSurgery(){
+  this.surgeryService.getSurgeonSurgery((this.date.value).toLocaleDateString('en-US')).subscribe((res)=>{
+    this.surgeryList = res['data']
+    this.surgeon = res['name']
+
+    this.surgeryList.forEach(item => {
+      item.date = new Date(item.dateTime).toLocaleDateString("en-US")
+      item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
+      item['messages'] = 0
+    });
+
+    this.messagesService.getMsgsCnt().subscribe((res)=>{
+      res['data'].forEach(element => {
+        if(element.id.split(',')[0] != '999'){
+          this.surgeryList.forEach(item => {
+            if(item.id == element.id.split(',')[0]){
+              console.log(element.count)
+              item['messages'] = element.count
+            }
+          });
+        }
+      });
+    },(err)=>{
+      console.log("error")
+    })
+  },(err)=>{
+    console.log("error")
+  })
+}
+
+openChatWindow(id,surgery,patientFname, patientLname){
+  this.surgeryList.forEach(element => {
+    if(element.id == id){
+      element['messages']= 0;
+    }
+  });
+  let user = {
+    participantType: ChatParticipantType.User,
+    id: id,
+    displayName: patientFname+" "+patientLname+"("+surgery+")",
+    avatar: "https://i.stack.imgur.com/ZQT8Z.png",
+    status: ChatParticipantStatus.Online
+    };
+  this.adapter = new MessageAdapter(this.patientService, this.messagesService, this.http, id);
+  setTimeout(()=>this.ngChatInstance.triggerOpenChatWindow(user), 500);
+  this.messagesService.clearMsgsCnt(id+',999').subscribe((res)=>{}, (err)=>{
+    console.log(err)
+  })
+}
+
 }

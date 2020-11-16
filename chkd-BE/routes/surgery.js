@@ -316,7 +316,6 @@ router.get("/prevpatientsurgery", (req, res) => {
 router.get("/surgeonsurgery", (req, res) => {
     var token = req.header("x-auth-header");
     var date = req.header("data");
-    console.log(new Date(date).getTime())
     Token.findOne({ hash: token }).then(async(result) => {
         if (result == null || result == undefined) {
             res.status(404).json({

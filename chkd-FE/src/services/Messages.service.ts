@@ -14,4 +14,11 @@ export class MessagesService{
         socket.emit('sendMessage', data);
     }
 
+    getMsgsCnt(){
+        return this.http.get(`${this.baseUri}/count`)
+    }
+
+    clearMsgsCnt(id){
+        return this.http.post(this.baseUri, {'id': id})
+    }
 }

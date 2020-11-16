@@ -22,6 +22,7 @@ import { MessagesService } from 'src/services/Messages.service';
 import io from "socket.io-client";
 import { HttpClient } from '@angular/common/http';
 import { MatPaginator } from '@angular/material/paginator';
+import { element } from 'protractor';
 
 
 @Component({
@@ -155,8 +156,21 @@ export class AdminComponent implements OnInit {
       this.newList = this.surgeryList
       this.sortedList = this.newList.slice();
       this.sortedList.forEach(element => {
-        element['messages'] = 0;
+        element['messages'] = 0
       });
+      this.messagesService.getMsgsCnt().subscribe((res)=>{
+        res['data'].forEach(element => {
+          if(element.id.split(',')[0] != '999'){
+            this.sortedList.forEach(item => {
+              if(item.id == element.id.split(',')[0]){
+                item['messages'] = element.count
+              }
+            });
+          }
+        });
+      },(err)=>{
+        console.log("error")
+      })
     }, (err)=>{
       console.log("error")
     })
@@ -450,7 +464,9 @@ export class AdminComponent implements OnInit {
       };
     this.adapter = new MessageAdapter(this.patientService, this.messagesService, this.http, id);
     setTimeout(()=>this.ngChatInstance.triggerOpenChatWindow(user), 500);
-      
+    this.messagesService.clearMsgsCnt(id+',999').subscribe((res)=>{}, (err)=>{
+      console.log(err)
+    })
   }
 
 }

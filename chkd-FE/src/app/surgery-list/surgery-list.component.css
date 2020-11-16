@@ -185,3 +185,45 @@ tr.example-element-row:not(.example-expanded-row):hover {
     position: relative !important;
     bottom: 300px !important;
 }
+
+::ng-deep .date-wrap .mat-form-field-appearance-outline .mat-form-field-wrapper {
+    margin: 0 !important;
+}
+
+::ng-deep .date-wrap .mat-form-field-wrapper {
+    padding: 0 !important;
+}
+
+.mat-tab-group {
+    margin-top: 50px;
+}
+
+.col-lg-6 {
+    margin-top: 25px;
+    border-top: 1px solid rgb(230, 228, 228);
+    padding-top: 25px;
+}
+
+.date-wrap {
+    float: right;
+}
+
+.noData {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.mat-icon {
+    cursor: pointer;
+}
+
+.message {
+    float: right !important;
+    color: rgb(125, 175, 50);
+    font-size: 30px;
+}
+
+::ng-deep .ng-chat-window {
+    position: relative !important;
+    bottom: 300px !important;
+}

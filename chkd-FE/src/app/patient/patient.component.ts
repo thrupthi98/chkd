@@ -67,18 +67,28 @@ export class PatientComponent implements OnInit {
         this.messageNumbers.push(0)
       }
 
+      this.messageService.getMsgsCnt().subscribe((res)=>{
+        res['data'].forEach(element => {
+          if(this.surgeryIds.indexOf(element.id.split(",")[1]) != -1){
+            this.messageNumbers[this.surgeryIds.indexOf(element.id.split(",")[1])] = element.count
+          }
+        });
+      },(err)=>{
+        console.log("error")
+      })
+
       this.patient = res['name']
 
 
       this.socket.on(this.patientDetails[0].pt_id, (data) => {
-        this.currentStatus[this.surgeryIds.indexOf(data['data']['id'])] = this.statusNames.indexOf(data['data']['status'])
-      });
-
-      this.socket.on(this.patientDetails[0].pt_id, (data) => {
-        if(this.ngChatInstance !== undefined){
-          this.ngChatInstance.triggerCloseChatWindow(data['data']['toId'])
+        if(data['data']['toId'] != undefined && data['data']['toId'] != null){
+          if(this.ngChatInstance !== undefined){
+            this.ngChatInstance.triggerCloseChatWindow(data['data']['toId'])
+          }
+          this.messageNumbers[this.surgeryIds.indexOf(data['data']['toId'])]++
+        }else{
+          this.currentStatus[this.surgeryIds.indexOf(data['data']['id'])] = this.statusNames.indexOf(data['data']['status'])
         }
-        this.messageNumbers[this.surgeryIds.indexOf(data['data']['toId'])]++
       });
 
       this.patientDetails.forEach(item => {
@@ -162,6 +172,9 @@ export class PatientComponent implements OnInit {
       setTimeout(()=>{
         this.ngChatInstance.triggerOpenChatWindow(user);
       },500)
+      this.messageService.clearMsgsCnt('999,'+id).subscribe((res)=>{}, (err)=>{
+        console.log(err)
+      })
   }
 
   // check(){
