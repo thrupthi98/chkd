@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const metaData = require('../metadata/config');
-const db = metaData.dbUrl;
 
 const { nanoid } = require('nanoid');
 const jwt = require("jsonwebtoken");
@@ -411,12 +409,12 @@ router.put("/update/:id", (req, res) => {
 
 router.put("/statusUpdate/:id", (req, res) => {
     let result;
-    var time ;
-    Surgery.findOne({id: req.params.id},{updatedAt :1}).then(response =>{
+    var time;
+    Surgery.findOne({ id: req.params.id }, { updatedAt: 1 }).then(response => {
         console.log(new Date(response.updatedAt).toLocaleString())
-        switch (req.body.status){
+        switch (req.body.status) {
             case "Patient Checked in":
-                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime()) / 60000).toFixed(2));
                 Surgery.findOneAndUpdate({ id: req.params.id }, {
                     status: req.body.status,
                     checkin: time
@@ -434,7 +432,7 @@ router.put("/statusUpdate/:id", (req, res) => {
                 })
                 break;
             case "Patient In Surgery":
-                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime()) / 60000).toFixed(2));
                 Surgery.findOneAndUpdate({ id: req.params.id }, {
                     status: req.body.status,
                     inSurgery: time
@@ -452,7 +450,7 @@ router.put("/statusUpdate/:id", (req, res) => {
                 })
                 break;
             case "Post Surgery":
-                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime()) / 60000).toFixed(2));
                 Surgery.findOneAndUpdate({ id: req.params.id }, {
                     status: req.body.status,
                     postSurgery: time
@@ -470,7 +468,7 @@ router.put("/statusUpdate/:id", (req, res) => {
                 })
                 break;
             case "Patient Discharged":
-                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime())/ 60000).toFixed(2));
+                time = parseFloat(((new Date().getTime() - new Date(response.updatedAt).getTime()) / 60000).toFixed(2));
                 Surgery.findOneAndUpdate({ id: req.params.id }, {
                     status: req.body.status,
                     discharged: time
@@ -496,7 +494,7 @@ router.put("/statusUpdate/:id", (req, res) => {
         result = { 'success': false, 'message': 'Some Error', 'error': error };
         console.log(error);
     });
-    
+
     // Surgery.findOneAndUpdate({ id: req.params.id }, {
     //     status: req.body.status
     // }).then(result => {

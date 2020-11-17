@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const metaData = require('../metadata/config');
 const Surgery = require("../models/surgery")
 
 router.get("/average/:name", (req, res) => {
