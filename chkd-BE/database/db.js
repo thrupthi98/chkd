@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const metaData = require('../metadata/config');
+const metaData = require('../metaData/config');
 const db = metaData.dbUrl;
 
 const connectDB = async() => {
