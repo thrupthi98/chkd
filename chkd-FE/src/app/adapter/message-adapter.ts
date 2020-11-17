@@ -10,7 +10,7 @@ export class MessageAdapter extends ChatAdapter implements IChatGroupAdapter {
   public static mockedParticipants: IChatParticipant[] = [];
   public mockedHistory: Array<Message> = [];
 
-  private url = 'http://localhost:3000';
+  private url = 'http://18.220.186.21:3000';
   private socket;
 
     constructor(
@@ -54,7 +54,7 @@ export class MessageAdapter extends ChatAdapter implements IChatGroupAdapter {
   }
 
   getMessageHistory(destinataryId: any): Observable<Message[]> {
-    return this.http.get(`http://localhost:3000/messages`,{
+    return this.http.get(`http://18.220.186.21:3000/messages`,{
       headers: {
         "Content-Type": "application/json",
         "X-auth-header": this.chatId,

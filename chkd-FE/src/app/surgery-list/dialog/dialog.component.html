@@ -60,7 +60,7 @@
                     <mat-form-field appearance="outline" class="col-lg-4">
                         <mat-label>Phone Number</mat-label>
                         <input matInput type="text" [textMask]="{mask: datemask}" formControlName="contact" (keyup)="checkContact()" required/>
-                        <mat-hint (click)="addUser()" align="end">Click here to add new user</mat-hint>
+                        <mat-hint (click)="addUser()" align="end" *ngIf="data.name == 'create'">Click here to add new user</mat-hint>
                     </mat-form-field>
                 </div>
             </form>

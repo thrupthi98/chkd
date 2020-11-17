@@ -17,7 +17,7 @@ export class PatientMessageAdapter extends ChatAdapter implements IChatGroupAdap
     }
   ];
 
-  private url = 'http://localhost:3000';
+  private url = 'http://18.220.186.21:3000';
   private socket;
 
   public mockedHistory: Array<Message> = [];
@@ -69,7 +69,7 @@ export class PatientMessageAdapter extends ChatAdapter implements IChatGroupAdap
   }
 
   getMessageHistory(): Observable<Message[]> {
-    return this.http.get(`http://localhost:3000/messages`,{
+    return this.http.get(`http://18.220.186.21:3000/messages`,{
       headers: {
         "Content-Type": "application/json",
         "X-auth-header": this.surgery_id,

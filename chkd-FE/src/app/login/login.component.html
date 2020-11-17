@@ -7,10 +7,13 @@
         <div class="login-wrap">
             <h1 class="tag">Choose user type</h1>
             <div class="row col-lg-12">
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <button class="admin-icon" (click)="nextStep('admin')">Pre-op</button>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
+                    <button class="admin-icon" (click)="nextStep('admin')">Surgeon</button>
+                </div>
+                <div class="col-lg-4">
                     <button class="user-icon" (click)="nextStep('patient')">Patient</button>
                 </div>
             </div>

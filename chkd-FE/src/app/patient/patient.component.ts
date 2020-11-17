@@ -26,7 +26,7 @@ export class PatientComponent implements OnInit {
 
   @ViewChild('ngChatInstance') protected ngChatInstance: IChatController;
 
-  private url = 'http://localhost:3000';
+  private url = 'http://18.220.186.21:3000';
   private socket;
 
   public adapter: ChatAdapter;

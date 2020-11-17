@@ -1,10 +1,10 @@
 <div class="patient-wrap">
     <h2>Welcome! {{patient}}</h2>
-    <div *ngIf="upcoming">
+    <!-- <div *ngIf="upcoming">
         <button class="btn history" (click)="showPrevious()">
            History
         </button>
-    </div>
+    </div> -->
     <div *ngIf="!upcoming">
         <button class="btn history" (click)="showPrevious()">
             Upcoming Surgeries

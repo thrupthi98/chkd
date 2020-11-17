@@ -24,7 +24,7 @@ export class SurgeryListComponent implements OnInit {
   public adapter: ChatAdapter;
   userId = 999;
 
-  private Soketurl = 'http://localhost:3000';
+  private Soketurl = 'http://18.220.186.21:3000';
   private socket;
 
   surgeryList:any = [];

@@ -71,7 +71,7 @@ function storeMessage(id, message) {
         }).then(async(result) => {
             const doc = await db.collection("status").doc(message.fromId + "," + message.toId).get();
             if (doc.data() == undefined) {
-                var count = 0
+                var count = 1
                 db.collection("status").doc(message.fromId + "," + message.toId).set({
                     count: count
                 }).then(response =>

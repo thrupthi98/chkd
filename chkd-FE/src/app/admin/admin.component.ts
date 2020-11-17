@@ -92,7 +92,7 @@ export class AdminComponent implements OnInit {
   filteredSurgeonkywds: Observable<string[]>;
   filteredVenuekywds: Observable<string[]>;
 
-  private Soketurl = 'http://localhost:3000';
+  private Soketurl = 'http://18.220.186.21:3000';
   private socket;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -386,6 +386,19 @@ export class AdminComponent implements OnInit {
         this.sortedList.forEach(element => {
           element['messages'] = 0;
         });
+        this.messagesService.getMsgsCnt().subscribe((res)=>{
+          res['data'].forEach(element => {
+            if(element.id.split(',')[0] != '999'){
+              this.sortedList.forEach(item => {
+                if(item.id == element.id.split(',')[0]){
+                  item['messages'] = element.count
+                }
+              });
+            }
+          });
+        },(err)=>{
+          console.log("error")
+        })
       }, (err)=>{
         console.log("error")
       })
@@ -428,7 +441,33 @@ export class AdminComponent implements OnInit {
             "Deleted",
             "Surgery deleted successfully",
           ).then((result)=>{
-            location.reload();
+            this.surgeryService.getUpcomingSurgery().subscribe((res)=>{
+              this.surgeryList = res['data']
+              this.surgeryList.forEach(item => {
+                item.date = new Date(item.dateTime).toLocaleDateString("en-US")
+                item.time = new Date(item.dateTime).toLocaleTimeString("en-US")
+              });
+              this.newList = this.surgeryList
+              this.sortedList = this.newList.slice();
+              this.sortedList.forEach(element => {
+                element['messages'] = 0;
+              });
+              this.messagesService.getMsgsCnt().subscribe((res)=>{
+                res['data'].forEach(element => {
+                  if(element.id.split(',')[0] != '999'){
+                    this.sortedList.forEach(item => {
+                      if(item.id == element.id.split(',')[0]){
+                        item['messages'] = element.count
+                      }
+                    });
+                  }
+                });
+              },(err)=>{
+                console.log("error")
+              })
+            }, (err)=>{
+              console.log("error")
+            })
           })
         },err=>{
           console.log("error");

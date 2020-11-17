@@ -17,7 +17,7 @@ import { PatientService } from 'src/services/Patient.service';
 })
 export class DialogComponent implements OnInit {
 
-  private url = 'http://localhost:3000';
+  private url = 'http://18.220.186.21:3000';
   private socket;
 
   patientId;
@@ -99,6 +99,7 @@ export class DialogComponent implements OnInit {
 
     if(this.data.name == 'edit'){
       this.showDetails = true;
+      this.newUser = true;
       this.surgeryService.getSurgeryById(this.data.id).subscribe(result => {
         this.receivedData = result['data'];
         this.selected = this.receivedData['type'];
