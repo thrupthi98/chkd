@@ -27,6 +27,9 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 io.on('connection', (socket) => {
     console.log("Connected to Socket!!" + socket.id);
+    io.emit("connect", {
+        hi: "Hello"
+    })
     socket.on('updateStatus', (data) => {
         console.log('socketData: ' + JSON.stringify(data));
         socketRoute.updateStatus(io, data);
