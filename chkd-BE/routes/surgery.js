@@ -380,6 +380,48 @@ router.get("/surgeonsurgery", (req, res) => {
     })
 })
 
+router.get("/surgerydates", (req, res) => {
+    var token = req.header("x-auth-header");
+    var date = req.header("data");
+    Token.findOne({ hash: token }).then(async(result) => {
+        if (result == null || result == undefined) {
+            res.status(404).json({
+                message: "No token Present",
+                status: "NOT_FOUND"
+            })
+        } else {
+            var userId = jwt.decode(result.token).id
+            Users.findOne({ id: userId }).then((response) => {
+                Surgery.find({ surgeon: response.fname + "" + response.lname }, { dateTime: 1 }).then((result) => {
+                    res.status(200).json({
+                        message: "Surgery fetched successfully",
+                        status: "SUCCESS",
+                        data: result,
+                    })
+                }).catch((err) => {
+                    console.log(err)
+                    res.status(500).json({
+                        message: "paroblem fetching patient surgery",
+                        status: 'FAILURE'
+                    })
+                })
+            }).catch((err) => {
+                console.log(err)
+                res.status(500).json({
+                    message: "paroblem fetching patient surgery",
+                    status: 'FAILURE'
+                })
+            })
+        }
+    }).catch((err) => {
+        console.log(err)
+        res.status(500).json({
+            message: "paroblem fetching patient surgery",
+            status: 'FAILURE'
+        })
+    })
+})
+
 router.put("/update/:id", (req, res) => {
     Surgery.findOneAndUpdate({ id: req.params.id }, {
         id: req.params.id,

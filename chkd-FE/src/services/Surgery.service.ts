@@ -54,6 +54,15 @@ export class SurgeryService{
         }) 
     }
 
+    getSurgeryDates(){
+        return this.http.get(`${this.baseUri}/surgerydates`,{
+            headers: {
+                "Content-Type": "application/json",
+                "X-auth-header": sessionStorage.getItem("UUID")
+              },
+        })
+    }
+
     updateStatus(data:any,socket:any):void{
         socket.emit('updateStatus', data);
     }

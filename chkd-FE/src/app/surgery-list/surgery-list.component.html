@@ -4,7 +4,8 @@
         <mat-form-field appearance="outline" class="col-lg-12">
             <mat-label>Select Date</mat-label>
             <input matInput [matDatepicker]="picker1" [formControl]="date" (click)="picker1.open()" (dateChange)="getSurgery()" readonly/>
-            <mat-datepicker touchUi #picker1></mat-datepicker>
+            <mat-datepicker [dateClass]="dateClass()" touchUi #picker1></mat-datepicker>
+            <!-- <mat-calendar [dateClass]="dateClass()"></mat-calendar> -->
         </mat-form-field>
     </div>
     <h1>Your Surgeries</h1>

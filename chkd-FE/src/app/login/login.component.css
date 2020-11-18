@@ -70,27 +70,15 @@ input::-webkit-inner-spin-button {
 }
 
 .admin-icon {
-    font-size: 30px;
+    font-size: 25px;
     border: none;
-    /* width: 100px;
-    height: 100px; */
     padding: 60px 30px;
     border-radius: 50%;
-}
-
-.user-icon {
-    font-size: 30px;
-    border: none;
-    /* width: 100px;
-    height: 100px; */
-    padding: 60px 30px;
-    border-radius: 50%;
+    width: 100%;
 }
 
 .admin-icon:hover,
-.admin-icon:focus,
-.user-icon:hover,
-.user-icon:focus {
+.admin-icon:focus {
     outline: none !important;
     box-shadow: none !important;
 }

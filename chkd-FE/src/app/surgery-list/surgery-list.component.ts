@@ -10,6 +10,7 @@ import { MessagesService } from 'src/services/Messages.service';
 import { PatientService } from 'src/services/Patient.service';
 import { MessageAdapter } from '../adapter/message-adapter';
 import { HttpClient } from '@angular/common/http';
+import { MatCalendar, MatCalendarCellCssClasses } from '@angular/material/datepicker';
 
 
 @Component({
@@ -36,6 +37,8 @@ export class SurgeryListComponent implements OnInit {
 
   date = new FormControl(new Date());
 
+  datesToHighlight = [];
+
   constructor(
     public dialog: MatDialog,
     private surgeryService: SurgeryService,
@@ -52,7 +55,18 @@ export class SurgeryListComponent implements OnInit {
     var url = this.router.url;
 
   this.authenticationService.checkAccess(url).subscribe((res)=>{  
-    
+
+    this.surgeryService.getSurgeryDates().subscribe((res)=>{
+      var data = res['data']
+      data.forEach(ele => {
+        var date = new Date(ele.dateTime)
+        this.datesToHighlight.push(date)
+      });
+    }, (err)=>{
+      console.log(err)
+    })
+
+    console.log(this.datesToHighlight)
     this.getSurgery();
 
     this.socket.on(999, (data) => {
@@ -74,6 +88,16 @@ export class SurgeryListComponent implements OnInit {
       this.router.navigateByUrl("/")
     }
   })
+}
+
+dateClass() {
+  return (date: Date): MatCalendarCellCssClasses => {
+    const highlightDate = this.datesToHighlight
+      .map(strDate => new Date(strDate))
+      .some(d => d.getDate() === date.getDate() && d.getMonth() === date.getMonth() && d.getFullYear() === date.getFullYear());
+    
+    return highlightDate ? 'special-date' : '';
+  };
 }
 
 prev(){
