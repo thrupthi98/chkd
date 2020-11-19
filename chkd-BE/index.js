@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
         socketRoute.sendMessage(io, data);
     })
     socket.on('clearmsg', (data) => {
-        io.emit('changeclr', )
+        io.emit('changeclr', data);
     })
     socket.on('msg', (data) => {
         console.log(data);
