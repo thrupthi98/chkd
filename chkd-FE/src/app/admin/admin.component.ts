@@ -4,7 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { Sort } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { map, reduce, startWith } from 'rxjs/operators';
 import { AuthService } from 'src/services/Authentication.service';
 import { KywdsService } from 'src/services/Kywds.service';
 import { LoginService } from 'src/services/Login.service';
@@ -23,6 +23,7 @@ import io from "socket.io-client";
 import { HttpClient } from '@angular/common/http';
 import { MatPaginator } from '@angular/material/paginator';
 import { element } from 'protractor';
+import { DataService } from 'src/services/Data.service';
 
 
 @Component({
@@ -43,6 +44,8 @@ export class AdminComponent implements OnInit {
 
   public adapter: ChatAdapter;
   userId = 999;
+
+  unreadMsgIds;
 
   types: any = [
     {value: 'Surgery Type'},
@@ -108,7 +111,8 @@ export class AdminComponent implements OnInit {
     private authenticationService: AuthService,
     private patientService: PatientService,
     private messagesService: MessagesService,
-    private http: HttpClient
+    private http: HttpClient,
+    private dataService: DataService
   ) { }
 
   ngOnInit(): void {
@@ -116,6 +120,10 @@ export class AdminComponent implements OnInit {
 
     let url = this.router.url;
 
+    this.dataService.currentMessage.subscribe(message => this.unreadMsgIds = message)
+    
+    console.log(this.unreadMsgIds)
+    
   this.authenticationService.checkAccess(url).subscribe((res)=>{
     this.kywdsService.getKywds().subscribe((res)=>{
       this.venuList = res['data'][0].kywds;
@@ -164,6 +172,12 @@ export class AdminComponent implements OnInit {
             this.sortedList.forEach(item => {
               if(item.id == element.id.split(',')[0]){
                 item['messages'] = element.count
+              }
+            });
+          }else{
+            this.sortedList.forEach(item => {
+              if(item.id == element.id.split(',')[1] && element.count != 0){
+                document.getElementById(element.id.split(',')[1]).style.color = 'red'
               }
             });
           }

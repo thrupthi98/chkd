@@ -8,6 +8,7 @@ import { PatientMessageAdapter } from '../adapter/patient-msg-adapter';
 import { MessagesService } from 'src/services/Messages.service';
 import { ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DataService } from 'src/services/Data.service';
 
 @Component({
   selector: 'app-patient',
@@ -32,6 +33,8 @@ export class PatientComponent implements OnInit {
   public adapter: ChatAdapter;
   userId;
 
+  unreadMsgs: any;
+
   patientDetails: any = [];
   patient;
   upcoming: Boolean = true;
@@ -51,12 +54,15 @@ export class PatientComponent implements OnInit {
     private surgeryService: SurgeryService,
     private router: Router,
     private messageService: MessagesService,
-    private http: HttpClient
+    private http: HttpClient,
+    private dataService: DataService
   ) { }
 
   ngOnInit(): void {
 
     this.socket = io.connect(this.url);
+
+    this.dataService.currentMessage.subscribe(message => this.unreadMsgs = message)
 
     this.surgeryService.getPatientSurgery().subscribe((res)=>{
       this.patientDetails = res['data']
@@ -86,6 +92,7 @@ export class PatientComponent implements OnInit {
             this.ngChatInstance.triggerCloseChatWindow(data['data']['toId'])
           }
           this.messageNumbers[this.surgeryIds.indexOf(data['data']['toId'])]++
+          this.dataService.changeMessage(data['data']['toId'])
         }else{
           this.currentStatus[this.surgeryIds.indexOf(data['data']['id'])] = this.statusNames.indexOf(data['data']['status'])
         }

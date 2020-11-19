@@ -7,18 +7,13 @@ import { BehaviorSubject, Observable } from 'rxjs';
     providedIn: 'root'
 })
 export class DataService{
-    
-    public isUserLoggedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+    private messageSource = new BehaviorSubject('');
+    currentMessage = this.messageSource.asObservable();
 
-    // public userData:any;
-    // private userRecord: BehaviorSubject<any> = new BehaviorSubject<any>(this.userData);
-    
-    // public getUserRecord(): Observable<any> {
-    //   return this.userRecord;
-    // }
-  
-    // public setUserRecord(data): void {
-    //   this.userData = data
-    //   this.userRecord.next(this.userData)
-    // }
+    constructor() { }
+
+    changeMessage(message: string) {
+        console.log(message)
+        this.messageSource.next(message)
+    }
 }

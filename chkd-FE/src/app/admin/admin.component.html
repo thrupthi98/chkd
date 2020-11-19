@@ -91,7 +91,7 @@
 
                     <mat-icon class="edit" (click)="openDialog('edit',row.id)">edit</mat-icon>
                     <mat-icon class="delete" (click)="delete(row.id)">delete</mat-icon>
-                    <mat-icon class="chat" matBadge={{row.messages}} matBadgeColor="warn" [matBadgeHidden]="row.messages == 0" (click)="openChatWindow(row.id,row.type, row.patientDetails[0].fname, row.patientDetails[0].lname)">
+                    <mat-icon class="chat" id={{row.id}} matBadge={{row.messages}} matBadgeColor="warn" [matBadgeHidden]="row.messages == 0" (click)="openChatWindow(row.id,row.type, row.patientDetails[0].fname, row.patientDetails[0].lname)">
                         message</mat-icon>
                 </td>
             </ng-container>
