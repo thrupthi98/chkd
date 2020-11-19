@@ -179,7 +179,7 @@ export class PatientComponent implements OnInit {
       setTimeout(()=>{
         this.ngChatInstance.triggerOpenChatWindow(user);
       },500)
-      this.messageService.clearMsgsCnt('999,'+id).subscribe((res)=>{}, (err)=>{
+      this.messageService.clearMsgsCnt('999,'+id, this.socket).subscribe((res)=>{}, (err)=>{
         console.log(err)
       })
   }

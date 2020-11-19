@@ -39,6 +39,9 @@ io.on('connection', (socket) => {
     socket.on('sendMessage', (data) => {
         socketRoute.sendMessage(io, data);
     })
+    socket.on('clearmsg', (data) => {
+        io.emit('changeclr', )
+    })
     socket.on('msg', (data) => {
         console.log(data);
     })

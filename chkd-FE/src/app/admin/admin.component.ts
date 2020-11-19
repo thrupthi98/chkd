@@ -537,7 +537,7 @@ export class AdminComponent implements OnInit {
       };
     this.adapter = new MessageAdapter(this.patientService, this.messagesService, this.http, id);
     setTimeout(()=>this.ngChatInstance.triggerOpenChatWindow(user), 500);
-    this.messagesService.clearMsgsCnt(id+',999').subscribe((res)=>{}, (err)=>{
+    this.messagesService.clearMsgsCnt(id+',999', this.socket).subscribe((res)=>{}, (err)=>{
       console.log(err)
     })
   }

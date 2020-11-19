@@ -18,7 +18,8 @@ export class MessagesService{
         return this.http.get(`${this.baseUri}/count`)
     }
 
-    clearMsgsCnt(id){
+    clearMsgsCnt(id, socket:any){
+        socket.emit('clearmsg', id.split(",")[1]);
         return this.http.post(this.baseUri, {'id': id})
     }
 }
