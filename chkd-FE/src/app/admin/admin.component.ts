@@ -189,8 +189,13 @@ export class AdminComponent implements OnInit {
       console.log("error")
     })
 
-    this.socket.on("clearmsg", (data) => {
-      console.log("ready");
+    this.socket.on("changeclr", (data) => {
+      console.log(data);
+      this.sortedList.forEach(item => {
+        if(item.id == data){
+          document.getElementById(data).style.color = 'green'
+        }
+      });
     })
 
     this.socket.on(999, (data) => {
