@@ -99,14 +99,14 @@ async function mobileIncrementFunction(message) {
         db.collection("status").doc(message.fromId + "," + message.toId).set({
             count: count
         }).then(response =>
-            resolve(true)
+            console.log("Done")
         )
     } else {
         var count = doc.data().count + 1;
         db.collection("status").doc(message.fromId + "," + message.toId).set({
             count: count
         }).then(response =>
-            resolve(true)
+            console.log("Done")
         )
     }
 }
