@@ -190,6 +190,26 @@ export class AdminComponent implements OnInit {
     })
 
     this.socket.on(999, (data) => {
+      this.messagesService.getMsgsCnt().subscribe((res)=>{
+        console.log(res);
+        res['data'].forEach(element => {
+          if(element.id.split(',')[0] != '999'){
+            this.sortedList.forEach(item => {
+              if(item.id == element.id.split(',')[0]){
+                item['messages'] = element.count
+              }
+            });
+          }else{
+            this.sortedList.forEach(item => {
+              if(item.id == element.id.split(',')[1] && element.count != 0){
+                document.getElementById(element.id.split(',')[1]).style.color = 'red'
+              }
+            });
+          }
+        });
+      },(err)=>{
+        console.log("error")
+      })
       if(this.ngChatInstance != undefined){
         this.ngChatInstance.triggerCloseChatWindow(data['data']['fromId'])
       }

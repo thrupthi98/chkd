@@ -46,6 +46,7 @@ const updateStatus = (io, data) => {
 
 const sendMessage = async(io, data) => {
     let response;
+    console.log(data);
     if (data.toId != 999) {
         Surgery.findOne({ id: data.toId }).then(async(surgery) => {
             var result = await firebase.storeMessage(data.toId, data)
@@ -53,6 +54,7 @@ const sendMessage = async(io, data) => {
                 console.log("Successfully sent message");
                 response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
                 io.emit(surgery.pt_id, response);
+                io.emit(999, response);
             } else {
                 res.status(500).json({
                     message: "There was some problem storing the messages",
@@ -72,6 +74,7 @@ const sendMessage = async(io, data) => {
             console.log("Successfully sent message");
             response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
             io.emit(999, response);
+            io.emit(data.fromId, response);
         } else {
             res.status(500).json({
                 message: "There was some problem storing the messages",

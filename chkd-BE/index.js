@@ -68,30 +68,36 @@ app.use("/patient", patient)
 app.use("/messages", messages)
 app.use("/analytics", analytics)
 
-app.post('/emitiomsg', (req, res) => {
+app.post('/emitiomsg', async(req, res) => {
     if (req.body.idTo != 999) {
         console.log("id - " + req.body.idTo);
         message = {};
         message.fromId = 999
         message.toId = req.body.idTo
-        firebaseFn.mobileIncrementFunction(message);
-        surgeryData.findOne({ id: req.body.idTo }).then(result => {
-            console.log(result.pt_id, req.body.content);
-            data = {}
-            data.id = result.pt_id;
-            data.toId = req.body.idTo;
-            var response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
-            io.emit(result.pt_id, response);
-        })
+        var response = await firebaseFn.mobileIncrementFunction(message);
+        if (response) {
+            surgeryData.findOne({ id: req.body.idTo }).then(result => {
+                console.log(result.pt_id, req.body.content);
+                data = {}
+                data.id = result.pt_id;
+                data.toId = req.body.idTo;
+                var response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
+                io.emit(result.pt_id, response);
+                io.emit(999, response);
+            })
+        }
     } else {
         data = {}
         data.fromId = req.body.idFrom;
         message = {};
         message.fromId = req.body.idFrom
         message.toId = 999
-        firebaseFn.mobileIncrementFunction(message);
-        var response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
-        io.emit(999, response);
+        var ffn = await firebaseFn.mobileIncrementFunction(message);
+        if (ffn) {
+            var response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
+            io.emit(999, response);
+            io.emit(req.body.idFrom, response);
+        }
     }
     res.status(200).json({
         messages: "Sent successfully"
