@@ -1,5 +1,5 @@
 export const Config = {
-    baseUrl: "http://localhost:3000/surgery",
+    // baseUrl: "http://localhost:3000/surgery",
     // keywds: "http://localhost:3000/keywds",
     // login:"http://localhost:3000/login",
     // user: "http://localhost:3000/user",
@@ -10,7 +10,7 @@ export const Config = {
     // messages: "http://localhost:3000/messages",
     // analytics: "http://localhost:3000/analytics"
 
-    // baseUrl: "http://18.220.186.21:3000/surgery",
+    baseUrl: "http://18.220.186.21:3000/surgery",
     keywds: "http://18.220.186.21:3000/keywds",
     login:"http://18.220.186.21:3000/login",
     user: "http://18.220.186.21:3000/user",
