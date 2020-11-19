@@ -18,7 +18,8 @@ const messages = require("./routes/messages");
 const socketRoute = require("./routes/socket");
 const analytics = require("./routes/analytics");
 
-const surgeryData = require("./models/surgery")
+const surgeryData = require("./models/surgery");
+const firebaseFn = require("./helper/firebase");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -27,15 +28,19 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 io.on('connection', (socket) => {
     console.log("Connected to Socket!!" + socket.id);
-    io.emit("connect", {
-        hi: "Hello"
-    })
+    var data = {};
+    data.hi = "hello";
+    console.log(data);
+    io.emit("connect", data);
     socket.on('updateStatus', (data) => {
         console.log('socketData: ' + JSON.stringify(data));
         socketRoute.updateStatus(io, data);
     });
     socket.on('sendMessage', (data) => {
         socketRoute.sendMessage(io, data);
+    })
+    socket.on('msg', (data) => {
+        console.log(data);
     })
 })
 
@@ -66,6 +71,10 @@ app.use("/analytics", analytics)
 app.post('/emitiomsg', (req, res) => {
     if (req.body.idTo != 999) {
         console.log("id - " + req.body.idTo);
+        message = {};
+        message.fromId = 999
+        message.toId = req.body.idTo
+        firebaseFn.mobileIncrementFunction(message);
         surgeryData.findOne({ id: req.body.idTo }).then(result => {
             console.log(result.pt_id, req.body.content);
             data = {}
@@ -77,6 +86,10 @@ app.post('/emitiomsg', (req, res) => {
     } else {
         data = {}
         data.fromId = req.body.idFrom;
+        message = {};
+        message.fromId = req.body.idFrom
+        message.toId = 999
+        firebaseFn.mobileIncrementFunction(message);
         var response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
         io.emit(999, response);
     }
