@@ -93,22 +93,24 @@ function storeMessage(id, message) {
 }
 
 async function mobileIncrementFunction(message) {
-    const doc = await db.collection("status").doc(message.fromId + "," + message.toId).get();
-    if (doc.data() == undefined) {
-        var count = 1
-        db.collection("status").doc(message.fromId + "," + message.toId).set({
-            count: count
-        }).then(response =>
-            console.log("Done")
-        )
-    } else {
-        var count = doc.data().count + 1;
-        db.collection("status").doc(message.fromId + "," + message.toId).set({
-            count: count
-        }).then(response =>
-            console.log("Done")
-        )
-    }
+    return new Promise(async(resolve, reject) => {
+        const doc = await db.collection("status").doc(message.fromId + "," + message.toId).get();
+        if (doc.data() == undefined) {
+            var count = 1
+            db.collection("status").doc(message.fromId + "," + message.toId).set({
+                count: count
+            }).then(response =>
+                resolve(true)
+            )
+        } else {
+            var count = doc.data().count + 1;
+            db.collection("status").doc(message.fromId + "," + message.toId).set({
+                count: count
+            }).then(response =>
+                resolve(true)
+            )
+        }
+    })
 }
 
 function getAllMsgsCnt() {

@@ -74,6 +74,7 @@ const sendMessage = async(io, data) => {
             console.log("Successfully sent message");
             response = { 'success': true, 'message': 'Successfully sent message', 'data': data };
             io.emit(999, response);
+            io.emit(data.fromId, response);
         } else {
             res.status(500).json({
                 message: "There was some problem storing the messages",
