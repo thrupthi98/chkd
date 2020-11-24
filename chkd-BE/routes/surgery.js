@@ -337,9 +337,6 @@ router.get("/surgeonsurgery", (req, res) => {
                                 $gte: new Date(date).getTime(),
                                 $lt: new Date(date).getTime() + (24 * 60 * 60 * 1000)
                             },
-                            status: {
-                                $ne: "Patient Discharged"
-                            },
                             surgeon: response.fname + "" + response.lname
                         }
                     },
